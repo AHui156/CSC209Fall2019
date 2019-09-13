@@ -1,6 +1,6 @@
 #!/usr/bin/env bash 
 
-./echo_arg csc209 >> echo_out.txt 
-./echo_stdin 
+./echo_arg csc209 > echo_out.txt 
+cat echo_stdin.c | ./echo_stdin
 ./count 209 | wc -m
 ls -S1 | ./echo_stdin
