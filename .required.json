@@ -1,1 +1,1 @@
-{"lab0":{"required":[],"required_only":false}}
+{"lab0":{"required":[],"required_only":false},"Lab1":{"required":["my_commands.sh","compile_all.sh"],"required_only":false},"lab2":{"required":["invest.c","score_card.c","phone.c","phone_loop.c"],"required_only":false}}
