@@ -3,7 +3,9 @@
 int main(){
     char phone[11];
     int in_int; 
-    scanf("%s" ,phone); 
+    scanf("%10s" ,phone); 
+    int c; 
+    while((c=getchar())!='\n'&&c!=EOF)
     // see that a pointer/addres must be passed into scanf
     scanf("%d", &in_int); 
     if (in_int == -1){
