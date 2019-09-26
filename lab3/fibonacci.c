@@ -17,7 +17,6 @@
 
 void fib(int** ptr, int n){
     int* temp = calloc(n, sizeof(int));
-    // int* temp = malloc(sizeof(int) * n);
     for(int i = 0; i < n; i++){
         // set for 0 and 1 
         if (i == 0 || i == 1){ temp[i] = i; }

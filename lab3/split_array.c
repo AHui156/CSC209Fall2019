@@ -9,13 +9,13 @@
    Do not allocate any more memory than necessary.
 */
 int **split_array(const int *s, int length) {
-    int** ret = malloc(sizeof(int*) * 2);
+    int** ret = calloc(sizeof(int*) * 2);
     int even_length = 0;
     int odd_length = 0;
     even_length = (length % 2 == 0) ? length / 2:(length / 2) + 1; 
     odd_length = length - even_length; 
-    int* even_arr = malloc(sizeof(int) * even_length);
-    int* odd_arr = malloc(sizeof(int) * odd_length);
+    int* even_arr = calloc(sizeof(int) * even_length);
+    int* odd_arr = calloc(sizeof(int) * odd_length);
     int even_count = 0; 
     int odd_count = 0;
     for(int i = 0; i<length; i++){
@@ -39,7 +39,7 @@ int **split_array(const int *s, int length) {
  */
 
 int *build_array(char **strs, int size) {
-    int* temp = malloc(sizeof(int) * size);
+    int* temp = calloc(sizeof(int) * size);
     for (int i = 0; i < size; i++){
         temp[i] = atoi(strs[i + 1]);
     }
