@@ -14,11 +14,11 @@ int main(int argc, char **argv) {
     // Print a message to stderr and exit with an argument of 1 if there isn't
     // the right number of parameters, or the second argument is not -p
     if(argc > 3 || argc == 1){
-        fprintf(stderr, "Incorrect number of arguments\n"); 
+        fprintf(stderr, "Usage: count_cells <imagefile.txt> [-p]");
         return 1;
     }
     else if(argc == 3 && strcmp(argv[2], "-p") != 0){
-        fprintf(stderr, "-p is the optional argument\n" ); 
+        fprintf(stderr, "Usage: count_cells <imagefile.txt> [-p]");
         return 1;
     }
     
