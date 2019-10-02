@@ -11,8 +11,8 @@ void print_image(int num_rows, int num_cols, int arr[num_rows][num_cols]);
 int count_cells(int num_rows, int num_cols, int arr[num_rows][num_cols]);
 
 int main(int argc, char **argv) {
-    // Print a message to stderr and exit with an argument of 1 if there are
-    // not the right number of parameters, or the second argument is not -p
+    // Print a message to stderr and exit with an argument of 1 if there isn't
+    // the right number of parameters, or the second argument is not -p
     if(argc > 3 || argc == 1){
         fprintf(stderr, "Incorrect number of arguments\n"); 
         return 1;
@@ -28,8 +28,9 @@ int main(int argc, char **argv) {
         fscanf(fp, "%d %d\n", &rows, &columns); 
         int a[rows][columns]; 
         read_image(rows, columns, a, fp);  
+        int cell_count = count_cells(rows, columns, a); 
         if (argc == 3){ print_image(rows, columns, a);}
-        printf("Number of Cells is %d\n", count_cells(rows, columns, a));
+        printf("Number of Cells is %d\n", cell_count); 
         fclose(fp);
     } else {
         fprintf(stderr, "Error opening file: %s\n", strerror(errno));
