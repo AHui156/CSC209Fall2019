@@ -13,6 +13,7 @@
 */
 
 int truncate(char* s, int n){
+    if (n < 0){ return 0; }
     if (strlen(s) > n){
         int ret = strlen(s) - n;
         s[n] = '\0';
