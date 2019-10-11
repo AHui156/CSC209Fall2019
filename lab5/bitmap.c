@@ -35,12 +35,13 @@ void read_bitmap_metadata(FILE *image, int *pixel_array_offset, int *width, int 
 struct pixel **read_pixel_array(FILE *image, int pixel_array_offset, int width, int height) {
     fseek(image, pixel_array_offset, SEEK_SET); 
     struct pixel** ret = malloc(sizeof(struct pixel*) * height);
-     
     for(int i = 0; i < height; i++){
         ret[i] = malloc(sizeof(struct pixel) * width);     
         for(int m = 0; m < width; m++){
-            fread(&ret[i][m], sizeof(struct pixel), 1, image); 
-            fseek(image, 3, SEEK_CUR); 
+            unsigned char temp_arr[3]; 
+            fread(temp_arr, sizeof(unsigned char), 3, image);
+            struct pixel temp_pixel = {.blue = temp_arr[0], .green = temp_arr[1], .red = temp_arr[2]};
+            ret[i][m] = temp_pixel;
         }
     }
     return ret;
