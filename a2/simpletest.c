@@ -14,11 +14,10 @@
 int main(void) {
 
     mem_init(SIZE);
-    
     char *ptrs[10];
     int i;
 
-    /* Call smalloc 4 times */
+    // Call smalloc 4 times 
     
     for(i = 0; i < 4; i++) {
         int num_bytes = (i+1) * 10;
@@ -42,6 +41,6 @@ int main(void) {
     printf("Contents of allocated memory:\n");
     print_mem();
 
-    mem_clean();
+    mem_clean(); 
     return 0;
 }

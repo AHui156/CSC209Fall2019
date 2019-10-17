@@ -38,6 +38,7 @@ void *smalloc(unsigned int nbytes) {
             allocated = cur_free; 
             allocated->next = allocated_list; 
             allocated_list = allocated;
+            break;
         } else if(cur_free->size > nbytes){
             // Create and set new block 
             // Advance freelist block addr by nbytes 
@@ -49,12 +50,14 @@ void *smalloc(unsigned int nbytes) {
             cur_free->size -= nbytes;    
             allocated->next = allocated_list; 
             allocated_list = allocated;
+            break;
         }    
         prev_free = cur_free;
         cur_free = cur_free->next; 
     }
     // push allocated block into allocated_list
-    return allocated->addr;
+    if (allocated != NULL) { return allocated->addr;}
+    else {return NULL;}
 }
 
 
@@ -80,7 +83,7 @@ int sfree(void *addr) {
     previous->next = cur->next;
     cur->next = freelist; 
     freelist = cur; 
-    return -1;
+    return 0;
 }
 
 
