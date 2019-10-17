@@ -23,7 +23,7 @@ int main(void) {
         int num_bytes = (i+1) * 10;
     
         ptrs[i] = smalloc(num_bytes);
-        write_to_mem(num_bytes, ptrs[i], i);
+        write_to_mem(num_bytes, ptrs[i], i); // this writes to the reserved memory 
     }
     printf("List of allocated blocks:\n");
     print_allocated();

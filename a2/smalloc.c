@@ -60,13 +60,12 @@ void *smalloc(unsigned int nbytes) {
     else {return NULL;}
 }
 
-
 int sfree(void *addr) {
     // check that addr is a valid block in allocated_list 
     // and set to cur 
     struct block* cur = allocated_list;
     int flag = 0; 
-    while (cur->addr != addr){
+    while (cur != NULL){
         if (cur->addr == addr){ 
             flag = 1; 
             break;
@@ -119,10 +118,6 @@ void mem_init(int size) {
 }
 
 void mem_clean(){
-	//TODO
-        // free memory in freelist and allocated_list 
-    // Have to traverse and free from the end. 
-    // sfree all allocated, then free all free?
     struct block* cur = NULL;
     cur = allocated_list;
     while(cur != NULL){
@@ -130,8 +125,8 @@ void mem_clean(){
         free(cur);
         cur = next;
     }
-   cur = freelist->addr; 
-   while(cur->addr != NULL){
+   cur = freelist; 
+   while(cur!= NULL){
        struct block* next = cur->next;
        free(cur);
        cur = next;
