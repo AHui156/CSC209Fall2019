@@ -5,21 +5,11 @@
 #include <sys/mman.h>
 #include "smalloc.h"
 
-
-
 void *mem;
 struct block *freelist;
 struct block *allocated_list;
 
-
 void *smalloc(unsigned int nbytes) {
-	//TODO
-    // 1. Search for blocks in freelist that are >= nbytes 
-    // 2. If none found - return NULL, else 
-    // 3. If equal size, remove freelist block and push to allocated_list 
-    // 4. If > size, split freelist block into nbytes and leftover, then remove nbytes block and push to 
-    // allocated_list  
-    
     // Check if nbytes is a multiple of 8, otherwise set to next highest multiple of 8
     if(nbytes % 8 != 0){
         nbytes = nbytes - (nbytes % 8) + 8;
@@ -40,9 +30,6 @@ void *smalloc(unsigned int nbytes) {
             allocated_list = allocated;
             break;
         } else if(cur_free->size > nbytes){
-            // Create and set new block 
-            // Advance freelist block addr by nbytes 
-            // Reduce freelist block size  
             allocated = malloc(sizeof(struct block)); 
             allocated->addr = cur_free->addr; 
             allocated->size = nbytes; 
@@ -55,33 +42,52 @@ void *smalloc(unsigned int nbytes) {
         prev_free = cur_free;
         cur_free = cur_free->next; 
     }
-    // push allocated block into allocated_list
     if (allocated != NULL) { return allocated->addr;}
     else {return NULL;}
 }
 
+/* 
+ * Removes the struct block with addr and 
+ * from allocated_list and places it in freelist. 
+ * Removed block traverses freelist to find the first block larger
+ * than itself and inserts itself before that block.
+ */
 int sfree(void *addr) {
-    // check that addr is a valid block in allocated_list 
-    // and set to cur 
-    struct block* cur = allocated_list;
+    // Traverse allocated_list and removes specified block, return -1 if not found
+    struct block* cur_allocated = allocated_list;
+    struct block* previous_allocated = NULL;
     int flag = 0; 
-    while (cur != NULL){
-        if (cur->addr == addr){ 
+    while (cur_allocated != NULL){
+        if (cur_allocated->addr == addr){ 
             flag = 1; 
             break;
         } 
-        cur = cur->next; 
+        previous_allocated = cur_allocated;
+        cur_allocated = cur_allocated->next; 
     }
-    if (flag == 0){ return -1;} 
-	//TODO
-    // Remove allocated_list block and push to freelist
-    struct block* previous = allocated_list;
-    while(previous->next != cur){
-        previous = previous->next;
+    if (flag == 0){ return -1; } 
+
+    // Remove the block from allocated_list
+    if (previous_allocated == NULL){
+        allocated_list = cur_allocated->next;
+    } else {
+        previous_allocated->next = cur_allocated->next; 
+    }
+
+    // Insert the block into freelist at appropriate location
+    struct block* cur_free = freelist;
+    struct block* previous_free = NULL;  
+    if (freelist == NULL){ 
+        freelist = cur_allocated; 
+        return 0;
+    }
+    while(cur_allocated->addr >= cur_free->addr){
+        previous_free = cur_free;
+        cur_free = cur_free->next; 
     } 
-    previous->next = cur->next;
-    cur->next = freelist; 
-    freelist = cur; 
+    cur_allocated->next = cur_free; 
+    if (previous_free != NULL) { previous_free->next = cur_allocated; } 
+    else { freelist = cur_allocated; }
     return 0;
 }
 
@@ -109,7 +115,6 @@ void mem_init(int size) {
          exit(1);
     }
 
-    // Initialize first freelist block
     freelist = malloc(sizeof(struct block)); 
     freelist->addr = mem; 
     freelist->size = size; 
@@ -117,6 +122,9 @@ void mem_init(int size) {
     allocated_list = NULL; 
 }
 
+/*
+ * Traverses through allocated_list and freelist and frees all struct blocks
+ */
 void mem_clean(){
     struct block* cur = NULL;
     cur = allocated_list;

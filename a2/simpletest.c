@@ -32,7 +32,13 @@ int main(void) {
     printf("Contents of allocated memory:\n");
     print_mem();
     
+    printf("freeing %p result = %d\n", ptrs[3], sfree(ptrs[3]));
+    printf("freeing %p result = %d\n", ptrs[0], sfree(ptrs[0]));
     printf("freeing %p result = %d\n", ptrs[1], sfree(ptrs[1]));
+    ptrs[4] = smalloc(40);
+    ptrs[5] = smalloc(76);  
+    printf("freeing %p result = %d\n", ptrs[5], sfree(ptrs[5]));
+    ptrs[6] = smalloc(72);  
     
     printf("List of allocated blocks:\n");
     print_allocated();
@@ -40,7 +46,7 @@ int main(void) {
     print_free();
     printf("Contents of allocated memory:\n");
     print_mem();
-
+    
     mem_clean(); 
     return 0;
 }

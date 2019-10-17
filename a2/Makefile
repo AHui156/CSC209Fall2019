@@ -22,9 +22,21 @@ smalloc.o : smalloc.c smalloc.h
 testhelpers.o : testhelpers.c smalloc.h
 	gcc -Wall -g -c testhelpers.c
 
+
 # The clean target is a phony target because there is no file called clean
 # It is a handy rule to remove the executabel and object files. For example,
 # you might run "make clean" before git add and commit.
 
-clean : 
-	rm simpletest *.o
+clean: 
+	rm mytest simpletest *.o
+
+
+# The target in this rule is the executable file mytest. 
+mytest: mytest.o smalloc.o testhelpers.o 
+	gcc -Wall -g -o mytest mytest.o smalloc.o testhelpers.o
+
+mytest.o: mytest.c smalloc.h
+	gcc -Wall -g -c mytest.c
+         
+tests: simpletest mytest
+

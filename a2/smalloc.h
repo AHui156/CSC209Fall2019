@@ -44,3 +44,4 @@ void write_to_mem(int size, char *ptr, char value);
 
 /* prints the contents of allocated memory */
 void print_mem(void);
+
