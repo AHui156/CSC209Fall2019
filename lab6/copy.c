@@ -12,11 +12,12 @@
  */
 
 char *copy(char *dest, const char *src, int capacity) {
-
-
+    for(int i = 0; i < capacity; i++){
+        dest[i] = src[i];  
+    }
+    dest[capacity] = '\0';
     return dest;
 }
-
 
 int main(int argc, char **argv) {
     if (argc != 3) {
@@ -27,8 +28,7 @@ int main(int argc, char **argv) {
     char *src = argv[2];
 
     char dest[size];
-    memset(dest, 'x', size);
-
+    memset(dest, 0, size);
     copy(dest, src, size);
 
     printf("%s\n", dest);
