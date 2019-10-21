@@ -15,10 +15,14 @@ void *smalloc(unsigned int nbytes) {
         nbytes = nbytes - (nbytes % 8) + 8;
     }
     
+    // Traverses freelist to find the first block that is >= nbytes. 
+    // If block size == nbytes, remove from freelist and push to allocated_list
+    // If block size > nbytes, split block, remove from freelist and push to allocated_list
     struct block* cur_free = freelist; 
     struct block* prev_free = NULL;
-    struct block* allocated = NULL; 
+    struct block* allocated = NULL;
     while(cur_free != NULL){
+
         if (cur_free->size == nbytes){
             if (prev_free != NULL){
                 prev_free->next = cur_free->next;
@@ -29,6 +33,7 @@ void *smalloc(unsigned int nbytes) {
             allocated->next = allocated_list; 
             allocated_list = allocated;
             break;
+            
         } else if(cur_free->size > nbytes){
             allocated = malloc(sizeof(struct block)); 
             allocated->addr = cur_free->addr; 
@@ -47,13 +52,12 @@ void *smalloc(unsigned int nbytes) {
 }
 
 /* 
- * Removes the struct block with addr and 
- * from allocated_list and places it in freelist. 
- * Removed block traverses freelist to find the first block larger
- * than itself and inserts itself before that block.
+ * 
+ * Removes block with specified addr from allocated_list. 
+ * Traverses freelist to insert block where addr order is preserved. 
  */
 int sfree(void *addr) {
-    // Traverse allocated_list and removes specified block, return -1 if not found
+    // Traverse allocated_list and removes specified block, returns -1 if not found
     struct block* cur_allocated = allocated_list;
     struct block* previous_allocated = NULL;
     int flag = 0; 

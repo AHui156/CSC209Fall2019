@@ -12,6 +12,10 @@ tests: simpletest mytest
 simpletest : simpletest.o smalloc.o testhelpers.o
 	gcc -Wall -g -o simpletest $^ 
 
+# The target in this rule is the executable file mytest. 
+mytest: mytest.o smalloc.o testhelpers.o 
+	gcc -Wall -g -o mytest $^
+
 # The following three rules compile a single .c file into an object file.  
 # We could collape these into one pattern rule.
 
@@ -34,8 +38,6 @@ simpletest : simpletest.o smalloc.o testhelpers.o
 clean: 
 	rm mytest simpletest *.o
 
-# The target in this rule is the executable file mytest. 
-mytest: mytest.o smalloc.o testhelpers.o 
-	gcc -Wall -g -o mytest mytest.o smalloc.o testhelpers.o
+
          
 
