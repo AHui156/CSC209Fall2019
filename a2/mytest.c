@@ -8,8 +8,7 @@
 #include <sys/mman.h>
 #include "smalloc.h"
 
-#include <strings.h>
-
+#include <string.h>
 
 #define SIZE 8 * 3
 

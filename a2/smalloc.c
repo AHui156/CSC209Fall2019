@@ -4,7 +4,7 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 #include "smalloc.h"
-#include <strings.h>
+#include <string.h>
 
 void *mem;
 struct block *freelist;
