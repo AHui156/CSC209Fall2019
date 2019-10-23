@@ -29,7 +29,7 @@ int main(){
     strncpy(ptr, "14 char string", 14);
     puts("Allocated memory contents:");
     print_mem();
-    printf("The stored string at %p: %s\n", ptr, ptr);
+    printf("The stored string at %p: %s\n", ptr, (char*)ptr);
     puts("Freeing all allocated blocks.");
     sfree(ptr); ptr = NULL; 
     sfree(ptr2); ptr2 = NULL; 
