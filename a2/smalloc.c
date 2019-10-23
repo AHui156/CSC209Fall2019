@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 #include "smalloc.h"
+#include <strings.h>
 
 void *mem;
 struct block *freelist;
@@ -52,7 +53,7 @@ void *smalloc(unsigned int nbytes) {
 }
 
 /* 
- * 
+ * Resets all data in the address to 0.
  * Removes block with specified addr from allocated_list. 
  * Traverses freelist to insert block where addr order is preserved. 
  */
@@ -71,6 +72,9 @@ int sfree(void *addr) {
     }
     if (flag == 0){ return -1; } 
 
+    // Reset all data in the address to 0. 
+    memset(addr, 0, cur_allocated->size);
+
     // Remove the block from allocated_list
     if (previous_allocated == NULL){
         allocated_list = cur_allocated->next;
@@ -85,10 +89,13 @@ int sfree(void *addr) {
         freelist = cur_allocated; 
         return 0;
     }
-    while(cur_allocated->addr >= cur_free->addr){
+    while(cur_free != NULL){
+        if(cur_allocated->addr < cur_free->addr){
+            break;
+        }
         previous_free = cur_free;
         cur_free = cur_free->next; 
-    } 
+    }
     cur_allocated->next = cur_free; 
     if (previous_free != NULL) { previous_free->next = cur_allocated; } 
     else { freelist = cur_allocated; }
