@@ -19,9 +19,43 @@
  */
 
 char **build_args(char *line) {
+    // TODO 
+    // Check that the first element is a tab, otherwise return NULL  
+    if (line[0] != '\t') { return NULL; }
+    else { line = &line[1]; } // remove the tab char from line 
+    int length = strlen(line); 
+
+    // Check if there are only spaces or tabs
+    int NULL_flag = 0;
+    for (int i = 0; i < length; i++){
+        if (line[i] != '\t' || line[i] != ' '){
+            NULL_flag = 1; 
+            break; 
+        }
+    }
+    if (NULL_flag == 0){ return NULL; }
+
+    // char** args = malloc(sizeof(char*) * MAX_ARGS); // don't forget to free this once done! 
+    char* args[MAX_ARGS];
+
+    // split string into args 
+    char* token; 
+    int arg_count = 0; 
+    while ((token = strsep(&line, " ")) != NULL){
+        args[arg_count] = token; 
+        arg_count++; 
+    }
     
-    // TODO
-    return NULL;
+
+    args[arg_count] = NULL;
+    //TODO - REMOVE
+    int count = 0;  
+    while(args[count] != NULL){
+        printf("Testing build_args: %s\n", args[count]); 
+        count++;
+    }
+
+    return args;
 }
 
 /* Return 1 if the line contains only spaces or a comment (#)
