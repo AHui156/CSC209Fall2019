@@ -35,8 +35,8 @@ char **build_args(char *line) {
     }
     if (NULL_flag == 0){ return NULL; }
 
-    // char** args = malloc(sizeof(char*) * MAX_ARGS); // don't forget to free this once done! 
-    char* args[MAX_ARGS];
+    char** args = malloc(sizeof(char*) * MAX_ARGS); // don't forget to free this once done! 
+    // char* args[MAX_ARGS];
 
     // split string into args 
     char* token; 
@@ -44,8 +44,7 @@ char **build_args(char *line) {
     while ((token = strsep(&line, " ")) != NULL){
         args[arg_count] = token; 
         arg_count++; 
-    }
-    
+    }    
 
     args[arg_count] = NULL;
     //TODO - REMOVE
@@ -53,7 +52,7 @@ char **build_args(char *line) {
     while(args[count] != NULL){
         printf("Testing build_args: %s\n", args[count]); 
         count++;
-    }
+    }    
 
     return args;
 }
@@ -75,6 +74,23 @@ int is_comment_or_empty(char *line) {
         }
     }
     return 1;
+}
+
+/*
+    Comments are allowed in a target/dependency line after list of dependencies.
+    This function removes comments from the line. 
+    Takes a char* line to be checked, modifies the line.
+    Returns void. 
+*/
+
+void remove_comment(char* line){
+    for (int i = 0; i < strlen(line); i++){
+        if (line[i] == '#'){
+            line[i] = '\n';
+            line[i+1] = '\0';
+            return;
+        }
+    }
 }
 
 /* Convert an array of args to a single space-separated string in buffer.

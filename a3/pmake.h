@@ -55,6 +55,9 @@ Rule *parse_file(FILE *fp);
  */
 char **build_args(char *line);
 
+// Removes a comment from the end of a line
+void remove_comment(char* line);
+
 /* Return 1 if line contains only space characters, and 0 otherwise */
 int is_comment_or_empty(char *line);
 

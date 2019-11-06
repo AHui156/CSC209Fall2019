@@ -67,11 +67,61 @@ void print_rules(Rule *rules){
      - If a line starts with a '#' or '\n' it is a comment or a blank line 
        and should be ignored. 
      - If a line only has space characters ('', '\t', '\n') in it, it should be
-       ignored.
+       ignored. 
+
  */
 Rule *parse_file(FILE *fp) {
 
     // TODO
+    /*
+        1. Traverse through each line 
+        2. Check if empty line - if so, close current rule of actions 
+        3. If starting with a word -> check if rule already exists, otherwise a new rule + target is created 
+            - Extract dependencies -> for each dependency, construct dep node, construct rule and append to rule-LL 
+            - Extract actions -> for each action, extract args 
+
+        a. Traverse through each line and identify as ignore, target, or action 
+        b. If target: 
+            - Check if it already exists as a rule in rule linked list and populate that 
+            - Otherwise create new rule 
+        c. If not target, must be action: 
+            - Extract actions and populate current rule 
+
+    */    
+   
+   char inputline[MAXLINE];  
+   Rule* head = NULL; 
+   while(fgets(inputline, MAXLINE, fp) != NULL){
+
+       // check if comment or \n 
+        if (inputline[0] == '#' || inputline[0] == '\n') continue; 
+        // check if empty
+        if (is_comment_or_empty(inputline) == 1) continue; 
+
+        if(inputline[0] != '\t'){
+            // Processing target line here
+            remove_comment(inputline); 
+            printf("Processing this target line now: %s", inputline);
+        } else {
+            // Processing action line here
+            printf("Processing this action line now: %s", inputline);
+            
+        }
+
+
+        
+            
+        
+        
+
+
+
+    
+
+
+   }
+   
+
 
     return NULL;
 }
