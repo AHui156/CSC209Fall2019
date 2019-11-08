@@ -50,7 +50,7 @@ char **build_args(char *line) {
     //TODO - REMOVE
     int count = 0;  
     while(args[count] != NULL){
-        printf("Testing build_args: %s\n", args[count]); 
+        printf("arg: %s\n", args[count]); 
         count++;
     }    
 
@@ -77,20 +77,19 @@ int is_comment_or_empty(char *line) {
 }
 
 /*
-    Comments are allowed in a target/dependency line after list of dependencies.
-    This function removes comments from the line. 
+    Remove trailing comment, newline character, or space character
     Takes a char* line to be checked, modifies the line.
     Returns void. 
 */
 
-void remove_comment(char* line){
+void remove_trailing(char* line){
     for (int i = 0; i < strlen(line); i++){
-        if (line[i] == '#'){
-            line[i] = '\n';
-            line[i+1] = '\0';
-            return;
+        if (line[i] == '#' || line[i] == '\n'){
+            line[i] = '\0';
+            break;
         }
     }
+    if (line[strlen(line)] == ' ') line[strlen(line)] = '\0';
 }
 
 /* Convert an array of args to a single space-separated string in buffer.
@@ -107,3 +106,4 @@ char *args_to_string(char **args, char *buffer, int size) {
     }
     return buffer;
 }
+
