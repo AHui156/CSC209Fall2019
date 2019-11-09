@@ -88,7 +88,7 @@ Rule *parse_file(FILE *fp) {
         if(inputline[0] != '\t'){
             // Processing target line here
             remove_trailing(inputline); // removing trailing comment and newline 
-            printf("Processing this target line now: %s\n", inputline);
+            // printf("Processing this target line now: %s\n", inputline);
 
             // Extract target 
             char *target = strsep(&inputline, " ");
@@ -126,7 +126,6 @@ Rule *parse_file(FILE *fp) {
             // each new rule node is also appended to the rule LL 
             char *dependency;
             while((dependency = strsep(&inputline, " ")) != NULL){
-                printf("dependency: %s\n", dependency);
 
                 // Create a new dependency node
                 Dependency* new_dep = malloc(sizeof(Dependency)); 
@@ -165,29 +164,28 @@ Rule *parse_file(FILE *fp) {
                 }
             }
             inputline = tofree; 
-        } else {
-            // Processing action line here
-            // Each action node corresponds to a single action line
-            printf("Processing this action line now: %s", inputline);
-
-            // Check that the action line belongs to a rule 
-            // Note: we assume that there are no empty lines between action lines
-            // i.e. 
+        } else {            
             if (curr_rule == NULL){
                 fprintf(stderr, "Encountered standalone action line. Exiting program.\n"); 
                 exit(1);
             }
 
-            char** action_args = build_args(inputline); 
+            char **action_args = build_args(inputline); 
+            int count = 0; 
+            while(action_args[count] != NULL){
+                count++; 
+            }
+
             Action* new_action = malloc(sizeof(Action)); 
-            new_action->args = action_args;
+            new_action->args = malloc(sizeof(char*) * (count + 1));
+            for(int i = 0; i < count; i++){
+                new_action->args[i] = malloc(sizeof(char) * (strlen(action_args[i]) + 1));
+                strncpy(new_action->args[i], action_args[i], strlen(action_args[i]));
+            } 
             new_action->next_act = curr_rule->actions; 
-            curr_rule->actions = new_action; 
+            curr_rule->actions = new_action;            
         } 
    }
    free(tofree); 
    return rule_head;
 }
-
-
-

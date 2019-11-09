@@ -20,20 +20,18 @@
 
 char **build_args(char *line) {
     // TODO 
-    // Check that the first element is a tab, otherwise return NULL  
-    if (line[0] != '\t') { return NULL; }
-    else { line = &line[1]; } // remove the tab char from line 
-    int length = strlen(line); 
+    line = &line[1]; // remove the tab char from line 
+    // int length = strlen(line); 
 
     // Check if there are only spaces or tabs
-    int NULL_flag = 0;
-    for (int i = 0; i < length; i++){
-        if (line[i] != '\t' || line[i] != ' '){
-            NULL_flag = 1; 
-            break; 
-        }
-    }
-    if (NULL_flag == 0){ return NULL; }
+    // int NULL_flag = 0;
+    // for (int i = 0; i < length; i++){
+    //     if (line[i] != '\t' || line[i] != ' '){
+    //         NULL_flag = 1; 
+    //         break; 
+    //     }
+    // }
+    // if (NULL_flag == 0){ return NULL; }
 
     char** args = malloc(sizeof(char*) * MAX_ARGS); // don't forget to free this once done! 
     // char* args[MAX_ARGS];
@@ -48,11 +46,11 @@ char **build_args(char *line) {
 
     args[arg_count] = NULL;
     //TODO - REMOVE
-    int count = 0;  
-    while(args[count] != NULL){
-        printf("arg: %s\n", args[count]); 
-        count++;
-    }    
+    // int count = 0;  
+    // while(args[count] != NULL){
+    //     printf("arg: %s\n", args[count]); 
+    //     count++;
+    // }    
 
     return args;
 }
@@ -89,7 +87,7 @@ void remove_trailing(char* line){
             break;
         }
     }
-    if (line[strlen(line)] == ' ') line[strlen(line)] = '\0';
+    if (line[strlen(line)-1] == ' ') line[strlen(line)-1] = '\0';
 }
 
 /* Convert an array of args to a single space-separated string in buffer.
