@@ -82,11 +82,10 @@ Rule *parse_file(FILE *fp) {
 
        // check if comment or \n or empty 
         if (inputline[0] == '#' || inputline[0] == '\n' || is_comment_or_empty(inputline) == 1) continue;
+        remove_trailing(inputline); // removing trailing comment and newline 
 
         if(inputline[0] != '\t'){
             // Processing target line here
-            remove_trailing(inputline); // removing trailing comment and newline 
-
             // Extract target 
             char *target = strsep(&inputline, " ");
             strsep(&inputline, " "); // removes the semicolon
@@ -162,7 +161,8 @@ Rule *parse_file(FILE *fp) {
                 }
             }
             inputline = tofree; 
-        } else {            
+        } else {  
+            // Processing action line here
             if (curr_rule == NULL){
                 fprintf(stderr, "Encountered standalone action line. Exiting program.\n"); 
                 exit(1);

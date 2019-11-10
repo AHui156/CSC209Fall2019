@@ -19,22 +19,8 @@
  */
 
 char **build_args(char *line) {
-    // TODO 
     line = &line[1]; // remove the tab char from line 
-    // int length = strlen(line); 
-
-    // Check if there are only spaces or tabs
-    // int NULL_flag = 0;
-    // for (int i = 0; i < length; i++){
-    //     if (line[i] != '\t' || line[i] != ' '){
-    //         NULL_flag = 1; 
-    //         break; 
-    //     }
-    // }
-    // if (NULL_flag == 0){ return NULL; }
-
     char** args = malloc(sizeof(char*) * MAX_ARGS); // don't forget to free this once done! 
-    // char* args[MAX_ARGS];
 
     // split string into args 
     char* token; 
@@ -45,13 +31,6 @@ char **build_args(char *line) {
     }    
 
     args[arg_count] = NULL;
-    //TODO - REMOVE
-    // int count = 0;  
-    // while(args[count] != NULL){
-    //     printf("arg: %s\n", args[count]); 
-    //     count++;
-    // }    
-
     return args;
 }
 
@@ -62,7 +41,6 @@ char **build_args(char *line) {
    helper function identifies such lines.
  */
 int is_comment_or_empty(char *line) {
-    
     for(int i = 0; i < strlen(line); i++){
         if(line[i] == '#') {
             return 1;
@@ -79,9 +57,9 @@ int is_comment_or_empty(char *line) {
     Takes a char* line to be checked, modifies the line.
     Returns void. 
 */
-
 void remove_trailing(char* line){
-    for (int i = 0; i < strlen(line); i++){
+    int length = strlen(line); 
+    for (int i = 0; i < length; i++){
         if (line[i] == '#' || line[i] == '\n'){
             line[i] = '\0';
             break;
