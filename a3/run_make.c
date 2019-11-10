@@ -87,8 +87,8 @@ void run_make(char *target, Rule *rules, int pflag) {
                     perror("wait"); 
                     exit(1);
                 }
-                if (WIFEXITED(status) == 1){
-                    fprintf(stderr, "Child exited with error."); 
+                if (WEXITSTATUS(status) == 1){
+                    fprintf(stderr, "Child exited with error.\n"); 
                     exit(1);
                 }
             }
