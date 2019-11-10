@@ -59,7 +59,15 @@ void run_make(char *target, Rule *rules, int pflag) {
 
     if (update || access(check_rule->target, F_OK ) == -1){
         // execute actions 
-        Action* action_head = check_rule->actions; 
+        Action* action_head = check_rule->actions;
+	char** act_args = action_head->args;
+	int arg_count = 0;
+	printf("Exec: %s ", act_args[0]);
+	char **next_args = &act_args[1];
+	while(next_args[arg_count] != NULL){
+		printf("%s ", next_args[arg_count]);
+		arg_count++;
+	}
         while (action_head != NULL){
             //fork and execvp 
             int ret_fork = fork(); 
@@ -68,8 +76,8 @@ void run_make(char *target, Rule *rules, int pflag) {
                 exit(EXIT_FAILURE); 
             } else if(ret_fork == 0){
                 //child
-                char** act_args = action_head->args;
-                if (execvp(act_args[0], &act_args[1]) == -1){
+                
+                if (execvp(act_args[0], act_args) == -1){
                     perror("execvp"); 
                     exit(EXIT_FAILURE);
                 } else { exit(EXIT_SUCCESS); }
