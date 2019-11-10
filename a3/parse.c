@@ -81,19 +81,15 @@ Rule *parse_file(FILE *fp) {
    while(fgets(inputline, MAXLINE, fp) != NULL){
 
        // check if comment or \n or empty 
-        if (inputline[0] == '#' || inputline[0] == '\n' || is_comment_or_empty(inputline) == 1){
-            continue;
-        } 
+        if (inputline[0] == '#' || inputline[0] == '\n' || is_comment_or_empty(inputline) == 1) continue;
 
         if(inputline[0] != '\t'){
             // Processing target line here
             remove_trailing(inputline); // removing trailing comment and newline 
-            // printf("Processing this target line now: %s\n", inputline);
 
             // Extract target 
             char *target = strsep(&inputline, " ");
             strsep(&inputline, " "); // removes the semicolon
-
             
             // Traverse the Rule LL to check if rule already exists
             Rule *check_rule = rule_head; 
@@ -118,6 +114,7 @@ Rule *parse_file(FILE *fp) {
                 new_rule->dependencies = NULL; 
                 new_rule->actions = NULL;
                 curr_rule = new_rule;
+
                 new_rule->next_rule = rule_head; 
                 rule_head = new_rule;
             } 
@@ -159,6 +156,7 @@ Rule *parse_file(FILE *fp) {
                     new_rule->dependencies = NULL; 
                     new_rule->actions = NULL;
                     new_dep->rule = new_rule;
+
                     new_rule->next_rule = rule_head; 
                     rule_head = new_rule;                 
                 }
@@ -186,6 +184,19 @@ Rule *parse_file(FILE *fp) {
             curr_rule->actions = new_action;            
         } 
    }
-   free(tofree); 
-   return rule_head;
+    
+    free(tofree);
+    // reverse the rule LL here 
+    Rule *current = rule_head;
+    Rule *prev, *next;
+    prev = next = NULL; 
+    while(current != NULL){
+        next = current->next_rule; 
+        current->next_rule = prev; 
+        prev = current; 
+        current = next; 
+    }
+    rule_head = prev;
+    
+    return rule_head;
 }
