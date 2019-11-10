@@ -104,7 +104,7 @@ Rule *parse_file(FILE *fp) {
             }
             
             // If Rule doesn't exist - initialize a new Rule, set as current Rule
-            // Append new Rule to the Rule linked list
+            // Push new Rule to the Rule linked list
             if (check_rule == NULL){
                 Rule *new_rule;
                 new_rule = malloc(sizeof(Rule)); 
@@ -113,7 +113,6 @@ Rule *parse_file(FILE *fp) {
                 new_rule->dependencies = NULL; 
                 new_rule->actions = NULL;
                 curr_rule = new_rule;
-
                 new_rule->next_rule = rule_head; 
                 rule_head = new_rule;
             } 
@@ -144,7 +143,7 @@ Rule *parse_file(FILE *fp) {
                 }
 
                 // Rule is not found
-                // Initialize a new Rule and target
+                // Initialize a new Rule with target
                 // Set current dependency to point to this Rule
                 
                 if (check_rule == NULL){
@@ -155,7 +154,6 @@ Rule *parse_file(FILE *fp) {
                     new_rule->dependencies = NULL; 
                     new_rule->actions = NULL;
                     new_dep->rule = new_rule;
-
                     new_rule->next_rule = rule_head; 
                     rule_head = new_rule;                 
                 }
@@ -180,8 +178,13 @@ Rule *parse_file(FILE *fp) {
                 new_action->args[i] = malloc(sizeof(char) * (strlen(action_args[i]) + 1));
                 strncpy(new_action->args[i], action_args[i], strlen(action_args[i]));
             } 
-            new_action->next_act = curr_rule->actions; 
-            curr_rule->actions = new_action;            
+            if(curr_rule->actions == NULL){ curr_rule->actions = new_action; }
+            else{
+                Action *curr_action = curr_rule->actions; 
+                while(curr_action->next_act != NULL){ curr_action = curr_action->next_act; }
+                curr_action->next_act = new_action; 
+            }
+            inputline = tofree;
         } 
    }
     

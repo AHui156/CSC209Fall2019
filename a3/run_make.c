@@ -41,14 +41,14 @@ void run_make(char *target, Rule *rules, int pflag) {
         }
     }
 
-    printf("Running make on: %s\n", check_rule->target); 
+    printf("Running target: %s\n", check_rule->target); 
 
     Dependency* dep_head = check_rule->dependencies; 
     int update = 0;
-    while(dep_head != NULL){        
-        run_make(dep_head->rule->target, rules, 0);
+    while(dep_head != NULL){           
+        run_make(dep_head->rule->target, rules, 0);     
         if (!compare_mtime(check_rule->target, dep_head->rule->target)){
-            printf("dependency is more recent than target\n");
+            printf("%s is more recent than %s\n", dep_head->rule->target, check_rule->target);            
             update = 1; 
         }
         dep_head = dep_head->next_dep;
@@ -60,14 +60,14 @@ void run_make(char *target, Rule *rules, int pflag) {
     if (update || access(check_rule->target, F_OK ) == -1){
         // execute actions 
         Action* action_head = check_rule->actions;
-	char** act_args = action_head->args;
-	int arg_count = 0;
-	printf("Exec: %s ", act_args[0]);
-	char **next_args = &act_args[1];
-	while(next_args[arg_count] != NULL){
-		printf("%s ", next_args[arg_count]);
-		arg_count++;
-	}
+        char** act_args = action_head->args;
+        int arg_count = 0;
+        printf("Executing: ");
+        while(act_args[arg_count] != NULL){
+            printf("%s ", act_args[arg_count]);
+            arg_count++;
+        }
+        printf("\n");
         while (action_head != NULL){
             //fork and execvp 
             int ret_fork = fork(); 
@@ -75,8 +75,7 @@ void run_make(char *target, Rule *rules, int pflag) {
                 perror("fork"); 
                 exit(EXIT_FAILURE); 
             } else if(ret_fork == 0){
-                //child
-                
+                //child                
                 if (execvp(act_args[0], act_args) == -1){
                     perror("execvp"); 
                     exit(EXIT_FAILURE);
@@ -84,11 +83,17 @@ void run_make(char *target, Rule *rules, int pflag) {
             } else {
                 //parent
                 int status = 0;  
-                wait(&status);            
+                if (wait(&status) == -1){
+                    perror("wait"); 
+                    exit(1);
+                }
+                if (WIFEXITED(status) == 1){
+                    fprintf(stderr, "Child exited with error."); 
+                    exit(1);
+                }
             }
             action_head = action_head->next_act; 
         }        
     }
-    return ;
 }
 
