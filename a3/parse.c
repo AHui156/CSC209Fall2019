@@ -174,6 +174,8 @@ Rule *parse_file(FILE *fp) {
 
             Action* new_action = malloc(sizeof(Action)); 
             new_action->args = malloc(sizeof(char*) * (count + 1));
+            // new_action->args = action_args;
+            memcpy(new_action->args, action_args, sizeof(char*) * count);
             for(int i = 0; i < count; i++){
                 new_action->args[i] = malloc(sizeof(char) * (strlen(action_args[i]) + 1));
                 strncpy(new_action->args[i], action_args[i], strlen(action_args[i]));
@@ -184,6 +186,8 @@ Rule *parse_file(FILE *fp) {
                 while(curr_action->next_act != NULL){ curr_action = curr_action->next_act; }
                 curr_action->next_act = new_action; 
             }
+            
+            
             inputline = tofree;
         } 
    }

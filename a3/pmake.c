@@ -58,6 +58,46 @@ int main(int argc, char **argv) {
     }
 
     run_make(target, rules, parallel);
+
+
+    // Freeing up all malloced space 
+    Rule *next_rule; 
+    while(rules != NULL){
+        next_rule = rules->next_rule;
+
+        // free target 
+        free(rules->target);
+
+        // free dependency nodes
+        Dependency* dep_head = rules->dependencies; 
+        Dependency *next_head;
+        while(dep_head != NULL){
+            next_head = dep_head->next_dep;
+            free(dep_head);
+            dep_head = next_head;
+        }
+
+        //free action nodes
+        Action *action_head = rules->actions;
+        Action *next_action; 
+        while(action_head != NULL){
+            next_action = action_head->next_act; 
+            int arg_count = 0; 
+            char** action_args = action_head->args; 
+            while(action_args[arg_count] != NULL){
+                // free individual arg strings
+                free(action_args[arg_count]);
+                arg_count++;
+            }
+            free(action_head->args);
+            free(action_head); 
+            action_head = next_action;
+        }
+
+        //free the Rule 
+        free(rules); 
+        rules = next_rule;
+    }
     
     fclose(fp);
 
