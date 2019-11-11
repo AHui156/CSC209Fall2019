@@ -93,6 +93,7 @@ Rule *parse_file(FILE *fp) {
             // Traverse the Rule LL to check if rule already exists
             Rule *check_rule = rule_head; 
             while (check_rule != NULL){
+                // printf("checking %s with %s\n", check_rule->target, target);
                 if (strcmp(check_rule->target, target) == 0){
                     // rule found
                     // set current rule to this Rule
@@ -132,6 +133,7 @@ Rule *parse_file(FILE *fp) {
                 // Check that rule does not already exist 
                 check_rule = rule_head; 
                 while (check_rule != NULL){
+                    // printf("checking %s with %s\n", check_rule->target, dependency);
                     if (strcmp(check_rule->target, dependency) == 0){
                         // rule found
                         // set current dependency->rule to this rule 
@@ -149,7 +151,7 @@ Rule *parse_file(FILE *fp) {
                 if (check_rule == NULL){
                     Rule* new_rule;
                     new_rule = malloc(sizeof(Rule)); 
-                    new_rule->target = malloc(sizeof(char) * MAXLINE); 
+                    new_rule->target = malloc(sizeof(char) * strlen(dependency)+1); 
                     strncpy(new_rule->target, dependency, strlen(dependency));
                     new_rule->dependencies = NULL; 
                     new_rule->actions = NULL;
@@ -166,20 +168,20 @@ Rule *parse_file(FILE *fp) {
                 exit(1);
             }
 
-            char **action_args = build_args(inputline); 
-            int count = 0; 
-            while(action_args[count] != NULL){
-                count++; 
-            }
+            char **action_args = build_args(inputline); // this thing is not being freed
+            // int count = 0; 
+            // while(action_args[count] != NULL){
+            //     count++; 
+            // }
 
             Action* new_action = malloc(sizeof(Action)); 
-            new_action->args = malloc(sizeof(char*) * (count + 1));
-            // new_action->args = action_args;
-            memcpy(new_action->args, action_args, sizeof(char*) * count);
-            for(int i = 0; i < count; i++){
-                new_action->args[i] = malloc(sizeof(char) * (strlen(action_args[i]) + 1));
-                strncpy(new_action->args[i], action_args[i], strlen(action_args[i]));
-            } 
+            // new_action->args = malloc(sizeof(char*) * (count + 1));
+            new_action->args = action_args;
+            // memcpy(new_action->args, action_args, sizeof(char*) * count);
+            // for(int i = 0; i < count; i++){
+            //     new_action->args[i] = malloc(sizeof(char) * (strlen(action_args[i]) + 1));
+            //     strncpy(new_action->args[i], action_args[i], strlen(action_args[i]));
+            // } 
             if(curr_rule->actions == NULL){ curr_rule->actions = new_action; }
             else{
                 Action *curr_action = curr_rule->actions; 

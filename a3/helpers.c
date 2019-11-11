@@ -20,16 +20,28 @@
 
 char **build_args(char *line) {
     line = &line[1]; // remove the tab char from line 
-    char** args = malloc(sizeof(char*) * MAX_ARGS); // don't forget to free this once done! 
+    char** args = malloc(sizeof(char*) * MAX_ARGS); 
+
+    // check line if only space or tabs
+    int flag = 0;
+    for(int i = 0; i < strlen(line); i++){
+        if(line[i] != ' ' || line[i] != '\t'){
+            flag = 1; 
+            break;
+        }
+    }
+    if (!flag) { return NULL; }
 
     // split string into args 
     char* token; 
     int arg_count = 0; 
     while ((token = strsep(&line, " ")) != NULL){
-        args[arg_count] = token; 
+        args[arg_count] = malloc(sizeof(char) * (strlen(token) + 1)); 
+        strncpy(args[arg_count], token, strlen(token));
         arg_count++; 
     }    
 
+    // Last element is NULL
     args[arg_count] = NULL;
     return args;
 }
