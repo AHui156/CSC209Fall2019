@@ -8,8 +8,8 @@
 
 #include "pmake.h"
 
-//This function compares the time of last modification between 2 files 
-//If the first is earlier than the second, return 0, else return 1
+//This function compares the time of last modification between 2 files. 
+//If <pathname1> is earlier than the <pathname2>, return 0, else return 1.
 int compare_mtime(const char *pathname1, const char *pathname2){
     struct stat *ret1 = calloc(1, sizeof(struct stat)); 
     struct stat *ret2 = calloc(1, sizeof(struct stat));  
@@ -27,7 +27,7 @@ int compare_mtime(const char *pathname1, const char *pathname2){
     free(ret2); 
     return ret_num;
 }
-
+// MACOS version
 // int compare_mtime(const char *pathname1, const char *pathname2){
 //     struct stat ret1, ret2; 
 //     stat(pathname1, &ret1); 
@@ -76,8 +76,6 @@ void run_make(char *target, Rule *rules, int pflag) {
             if(wait(&dep_status) == -1){
                 perror("wait failure");
                 exit(EXIT_FAILURE); 
-            } else {
-                puts("Child terminated successfully");
             }
         }
     } 
@@ -86,8 +84,6 @@ void run_make(char *target, Rule *rules, int pflag) {
     int update = 0;
     dep_head = check_rule->dependencies; 
     while(dep_head != NULL){
-        // need to check that file exists first 
-
         if (!compare_mtime(check_rule->target, dep_head->rule->target)){
             printf("%s is more recent than %s\n", dep_head->rule->target, check_rule->target);            
             update = 1; 
@@ -95,11 +91,13 @@ void run_make(char *target, Rule *rules, int pflag) {
         dep_head = dep_head->next_dep;
     }
 
-    // If dependency is more recent, or target file doesn't exist -> execute action
+    // If dependency is more recent, or target file doesn't exist -> execute actions
     if (update || access(check_rule->target, F_OK) == -1){
         Action* action_head = check_rule->actions;
         while (action_head != NULL){
             char **act_args = action_head->args;
+
+            // print action
             int arg_count = 0;
             printf("Executing: ");
             while(act_args[arg_count] != NULL){
@@ -107,6 +105,7 @@ void run_make(char *target, Rule *rules, int pflag) {
                 arg_count++;
             }
             printf("\n");
+            
             //fork and execvp 
             int exec_fork = fork(); 
             if (exec_fork == -1){

@@ -90,13 +90,12 @@ Rule *parse_file(FILE *fp) {
             char *target = strsep(&inputline, " ");
             strsep(&inputline, " "); // removes the semicolon
             
-            // Traverse the Rule LL to check if rule already exists
+            // Traverse the Rule linked list to check if Rule already exists
             Rule *check_rule = rule_head; 
             while (check_rule != NULL){
-                // printf("checking %s with %s\n", check_rule->target, target);
                 if (strcmp(check_rule->target, target) == 0){
                     // rule found
-                    // set current rule to this Rule
+                    // set current Rule to this Rule
                     curr_rule = check_rule;
                     break;
                 } else {
@@ -104,13 +103,14 @@ Rule *parse_file(FILE *fp) {
                 } 
             }
             
-            // If Rule doesn't exist - initialize a new Rule, set as current Rule
+            // If Rule doesn't exist - initialize a new Rule and set as current Rule
             // Push new Rule to the Rule linked list
             if (check_rule == NULL){
                 Rule *new_rule = NULL;
                 new_rule = malloc(sizeof(Rule)); 
-                new_rule->target = malloc(sizeof(char) * (strlen(target) + 1)); 
-                memset(new_rule->target, 0, sizeof(char) * (strlen(target) + 1));
+                new_rule->target = calloc(strlen(target) + 1, sizeof(char));
+                // new_rule->target = malloc(sizeof(char) * (strlen(target) + 1)); 
+                // memset(new_rule->target, 0, sizeof(char) * (strlen(target) + 1));
                 strncpy(new_rule->target, target, strlen(target));  
                 new_rule->dependencies = NULL; 
                 new_rule->actions = NULL;
@@ -119,13 +119,13 @@ Rule *parse_file(FILE *fp) {
                 rule_head = new_rule;
             } 
             
-            // Construct new dependency and rule nodes for each dependency here
-            // each new rule node is also appended to the rule LL 
+            // Construct new dependencies. If dependency does not point to Rule that exists, 
+            // construct new Rule and push to Rule linked list. 
             char *dependency = NULL;
             while((dependency = strsep(&inputline, " ")) != NULL){
 
                 // Create a new dependency node
-                Dependency* new_dep = malloc(sizeof(Dependency)); 
+                Dependency* new_dep = calloc(1, sizeof(Dependency)); 
 
                 // Add dependency node to the current Rule 
                 new_dep->next_dep = curr_rule->dependencies;
@@ -134,7 +134,6 @@ Rule *parse_file(FILE *fp) {
                 // Check that rule does not already exist 
                 check_rule = rule_head; 
                 while (check_rule != NULL){
-                    // printf("checking %s with %s\n", check_rule->target, dependency);
                     if (strcmp(check_rule->target, dependency) == 0){
                         // rule found
                         // set current dependency->rule to this rule 
@@ -151,7 +150,7 @@ Rule *parse_file(FILE *fp) {
                 
                 if (check_rule == NULL){
                     Rule* new_rule = NULL;
-                    new_rule = malloc(sizeof(Rule)); 
+                    new_rule = calloc(1, sizeof(Rule)); 
                     new_rule->target = calloc(strlen(dependency) + 1, sizeof(char));
                     // new_rule->target = malloc(sizeof(char) * strlen(dependency)+1); 
                     // memset(new_rule->target, 0, sizeof(char) * (strlen(target) + 1));
@@ -170,36 +169,25 @@ Rule *parse_file(FILE *fp) {
                 fprintf(stderr, "Encountered standalone action line. Exiting program.\n"); 
                 exit(1);
             }
-
-            char **action_args = build_args(inputline); // this thing is not being freed
-            // int count = 0; 
-            // while(action_args[count] != NULL){
-            //     count++; 
-            // }
-
-            Action* new_action = malloc(sizeof(Action)); 
-            // new_action->args = malloc(sizeof(char*) * (count + 1));
-            new_action->args = action_args;
+            
+            Action* new_action = calloc(1, sizeof(Action)); 
+            new_action->args = build_args(inputline);
             new_action->next_act = NULL;
-            // memcpy(new_action->args, action_args, sizeof(char*) * count);
-            // for(int i = 0; i < count; i++){
-            //     new_action->args[i] = malloc(sizeof(char) * (strlen(action_args[i]) + 1));
-            //     strncpy(new_action->args[i], action_args[i], strlen(action_args[i]));
-            // } 
             if(curr_rule->actions == NULL){ curr_rule->actions = new_action; }
             else{
                 Action *curr_action = curr_rule->actions; 
                 while(curr_action->next_act != NULL){ curr_action = curr_action->next_act; }
                 curr_action->next_act = new_action; 
             }
-            
-            
+
+            // strsep() in build_args() modifies pointer to inputline
+            // Need to reset it to the beginning of inputline.
             inputline = tofree;
         } 
    }
     
-    free(tofree);
-    // reverse the rule LL here 
+    
+    // Reverse the Rule linked list
     Rule *current = rule_head;
     Rule *prev, *next;
     prev = next = NULL; 
@@ -211,5 +199,6 @@ Rule *parse_file(FILE *fp) {
     }
     rule_head = prev;
 
+    free(tofree);
     return rule_head;
 }

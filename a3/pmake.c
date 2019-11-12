@@ -61,7 +61,9 @@ int main(int argc, char **argv) {
     run_make(target, rules, parallel);
 
 
-    // // Freeing up all malloced space 
+    // Freeing up all allocated memory
+    // Traverse through Rule linked list and free all nodes 
+    // from the botttom-up
     Rule *next_rule = NULL; 
     while(rules != NULL){
         next_rule = rules->next_rule;

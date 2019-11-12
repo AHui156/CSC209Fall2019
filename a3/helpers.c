@@ -57,7 +57,7 @@ int is_comment_or_empty(char *line) {
 
 /*
     Remove trailing comment, newline character, or space character
-    Takes a char* line to be checked, modifies the line.
+    from a line.
     Returns void. 
 */
 void remove_trailing(char* line){
