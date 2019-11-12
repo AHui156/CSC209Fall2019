@@ -26,7 +26,8 @@ char **build_args(char *line) {
     char* token = NULL; 
     int arg_count = 0; 
     while ((token = strsep(&line, " ")) != NULL){
-        args[arg_count] = malloc(sizeof(char) * (strlen(token) + 1)); 
+        // args[arg_count] = malloc(sizeof(char) * (strlen(token) + 1)); 
+        args[arg_count] = calloc(strlen(token) + 1, sizeof(char)); 
         strncpy(args[arg_count], token, strlen(token));
         arg_count++; 
     }    

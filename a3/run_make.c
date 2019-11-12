@@ -15,13 +15,17 @@ int compare_mtime(const char *pathname1, const char *pathname2){
     struct stat *ret2 = calloc(1, sizeof(struct stat));  
     stat(pathname1, ret1); 
     stat(pathname2, ret2); 
-    if ((*ret1).st_mtim.tv_sec < (*ret2).st_mtim.tv_sec){ return 0; } 
-    else if((*ret1).st_mtim.tv_sec > (*ret2).st_mtim.tv_sec){ return 1; } 
+    int ret_num = 0;
+    if ((*ret1).st_mtim.tv_sec < (*ret2).st_mtim.tv_sec){ ret_num = 0; } 
+    else if((*ret1).st_mtim.tv_sec > (*ret2).st_mtim.tv_sec){ ret_num = 1; } 
     else {
         // seconds are equal  
-        if ((*ret1).st_mtim.tv_nsec < (*ret2).st_mtim.tv_nsec){ return 0; }
-         else { return 1; }
+        if ((*ret1).st_mtim.tv_nsec < (*ret2).st_mtim.tv_nsec){ ret_num = 0; }
+         else { ret_num = 1; }
     }
+    free(ret1); 
+    free(ret2); 
+    return ret_num;
 }
 
 // int compare_mtime(const char *pathname1, const char *pathname2){
