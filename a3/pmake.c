@@ -39,6 +39,7 @@ int main(int argc, char **argv) {
             break;
         case 'f':
             filename = optarg;
+            break;
         default: /* '?' */
             fprintf(stderr, "Usage: %s [-op][-f <filename>] [target]\n", argv[0]);
             exit(EXIT_FAILURE);
@@ -60,8 +61,8 @@ int main(int argc, char **argv) {
     run_make(target, rules, parallel);
 
 
-    // Freeing up all malloced space 
-    Rule *next_rule; 
+    // // Freeing up all malloced space 
+    Rule *next_rule = NULL; 
     while(rules != NULL){
         next_rule = rules->next_rule;
 
@@ -70,7 +71,7 @@ int main(int argc, char **argv) {
 
         // free dependency nodes
         Dependency* dep_head = rules->dependencies; 
-        Dependency *next_head;
+        Dependency *next_head = NULL;
         while(dep_head != NULL){
             next_head = dep_head->next_dep;
             free(dep_head);
@@ -79,7 +80,7 @@ int main(int argc, char **argv) {
 
         //free action nodes
         Action *action_head = rules->actions;
-        Action *next_action; 
+        Action *next_action = NULL; 
         while(action_head != NULL){
             next_action = action_head->next_act; 
             int arg_count = 0; 

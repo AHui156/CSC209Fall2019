@@ -107,7 +107,7 @@ Rule *parse_file(FILE *fp) {
             // If Rule doesn't exist - initialize a new Rule, set as current Rule
             // Push new Rule to the Rule linked list
             if (check_rule == NULL){
-                Rule *new_rule;
+                Rule *new_rule = NULL;
                 new_rule = malloc(sizeof(Rule)); 
                 new_rule->target = malloc(sizeof(char) * (strlen(target) + 1)); 
                 strncpy(new_rule->target, target, strlen(target));  
@@ -120,7 +120,7 @@ Rule *parse_file(FILE *fp) {
             
             // Construct new dependency and rule nodes for each dependency here
             // each new rule node is also appended to the rule LL 
-            char *dependency;
+            char *dependency = NULL;
             while((dependency = strsep(&inputline, " ")) != NULL){
 
                 // Create a new dependency node
@@ -149,7 +149,7 @@ Rule *parse_file(FILE *fp) {
                 // Set current dependency to point to this Rule
                 
                 if (check_rule == NULL){
-                    Rule* new_rule;
+                    Rule* new_rule = NULL;
                     new_rule = malloc(sizeof(Rule)); 
                     new_rule->target = malloc(sizeof(char) * strlen(dependency)+1); 
                     strncpy(new_rule->target, dependency, strlen(dependency));
@@ -206,6 +206,6 @@ Rule *parse_file(FILE *fp) {
         current = next; 
     }
     rule_head = prev;
-    
+
     return rule_head;
 }

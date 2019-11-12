@@ -22,18 +22,8 @@ char **build_args(char *line) {
     line = &line[1]; // remove the tab char from line 
     char** args = malloc(sizeof(char*) * MAX_ARGS); 
 
-    // check line if only space or tabs
-    int flag = 0;
-    for(int i = 0; i < strlen(line); i++){
-        if(line[i] != ' ' || line[i] != '\t'){
-            flag = 1; 
-            break;
-        }
-    }
-    if (!flag) { return NULL; }
-
     // split string into args 
-    char* token; 
+    char* token = NULL; 
     int arg_count = 0; 
     while ((token = strsep(&line, " ")) != NULL){
         args[arg_count] = malloc(sizeof(char) * (strlen(token) + 1)); 

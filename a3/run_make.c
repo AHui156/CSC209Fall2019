@@ -10,26 +10,26 @@
 
 // This function compares the time of last modification between 2 files 
 // If the first is earlier than the second, return 0, else return 1
-int compare_mtime(const char *pathname1, const char *pathname2){
-    struct stat ret1, ret2; 
-    stat(pathname1, &ret1); 
-    stat(pathname2, &ret2); 
-    if (ret1.st_mtim.tv_sec < ret2.st_mtim.tv_sec){ return 0; } 
-    else if(ret1.st_mtim.tv_sec > ret2.st_mtim.tv_sec){ return 1; } 
-    else {
-        // seconds are equal  
-        if (ret1.st_mtim.tv_nsec < ret2.st_mtim.tv_nsec){ return 0; }
-         else { return 1; }
-    }
-}
-
 // int compare_mtime(const char *pathname1, const char *pathname2){
 //     struct stat ret1, ret2; 
 //     stat(pathname1, &ret1); 
 //     stat(pathname2, &ret2); 
-//     if (ret1.st_mtimespec.tv_sec < ret2.st_mtimespec.tv_sec){ return 0; } 
-//     else { return 1; } 
+//     if (ret1.st_mtim.tv_sec < ret2.st_mtim.tv_sec){ return 0; } 
+//     else if(ret1.st_mtim.tv_sec > ret2.st_mtim.tv_sec){ return 1; } 
+//     else {
+//         // seconds are equal  
+//         if (ret1.st_mtim.tv_nsec < ret2.st_mtim.tv_nsec){ return 0; }
+//          else { return 1; }
+//     }
 // }
+
+int compare_mtime(const char *pathname1, const char *pathname2){
+    struct stat ret1, ret2; 
+    stat(pathname1, &ret1); 
+    stat(pathname2, &ret2); 
+    if (ret1.st_mtimespec.tv_sec < ret2.st_mtimespec.tv_sec){ return 0; } 
+    else { return 1; } 
+}
 
 void run_make(char *target, Rule *rules, int pflag) {
     Rule *check_rule = rules; 
@@ -44,7 +44,8 @@ void run_make(char *target, Rule *rules, int pflag) {
     Dependency* dep_head = check_rule->dependencies;
     int dep_count = 0;
     int dep_fork;      
-    while(dep_head != NULL){        
+    while(dep_head != NULL){
+        // If -p, fork each dependency        
         if (pflag == 1){ 
             dep_fork = fork();
             if(dep_fork == -1){
@@ -52,14 +53,13 @@ void run_make(char *target, Rule *rules, int pflag) {
                 exit(EXIT_FAILURE);
             } else if(dep_fork == 0){
                 //child 
-                // should terminate after running it's dependency?
-                // the purpose of the child is to fork out the dep
-                // It's task is just to run the dep
                 run_make(dep_head->rule->target, rules, 0);
                 exit(EXIT_SUCCESS);
-                
             }
-        } else { run_make(dep_head->rule->target, rules, 0); }
+        } else { 
+            // If no -p, wait for run_make to return
+            run_make(dep_head->rule->target, rules, 0); 
+        }
         dep_head = dep_head->next_dep;
         dep_count++;
     }
@@ -91,18 +91,8 @@ void run_make(char *target, Rule *rules, int pflag) {
     }
 
     // If dependency is more recent, or target file doesn't exist -> execute action
-    // We assume here that *.c file must exist 
-
-    if (update || access(check_rule->target, F_OK ) == -1){
-        // execute actions 
+    if (update || access(check_rule->target, F_OK) == -1){
         Action* action_head = check_rule->actions;
-        // int arg_count = 0;
-        // printf("Executing: ");
-        // while(act_args[arg_count] != NULL){
-        //     printf("%s ", act_args[arg_count]);
-        //     arg_count++;
-        // }
-        // printf("\n");
         while (action_head != NULL){
             char **act_args = action_head->args;
             int arg_count = 0;
