@@ -55,7 +55,7 @@ Rule *parse_file(FILE *fp);
  */
 char **build_args(char *line);
 
-// Removes a comment from the end of a line
+// Removes trailing tabs, spaces, newlines and comments
 void remove_trailing(char* line);
 
 /* Return 1 if line contains only space characters, and 0 otherwise */
