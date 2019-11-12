@@ -73,9 +73,9 @@ void print_rules(Rule *rules){
 
  */
 Rule *parse_file(FILE *fp) {
-   char *inputline, *tofree;
-   inputline = malloc(sizeof(char) * MAXLINE);
-   tofree = inputline;  
+   // char *inputline = malloc(sizeof(char) * MAXLINE);
+    char *inputline = calloc(MAXLINE, sizeof(char));
+   char *tofree = inputline;  
    Rule *rule_head = NULL; 
    Rule *curr_rule = NULL;  
    while(fgets(inputline, MAXLINE, fp) != NULL){
@@ -110,6 +110,7 @@ Rule *parse_file(FILE *fp) {
                 Rule *new_rule = NULL;
                 new_rule = malloc(sizeof(Rule)); 
                 new_rule->target = malloc(sizeof(char) * (strlen(target) + 1)); 
+                memset(new_rule->target, 0, sizeof(char) * (strlen(target) + 1));
                 strncpy(new_rule->target, target, strlen(target));  
                 new_rule->dependencies = NULL; 
                 new_rule->actions = NULL;
@@ -151,7 +152,9 @@ Rule *parse_file(FILE *fp) {
                 if (check_rule == NULL){
                     Rule* new_rule = NULL;
                     new_rule = malloc(sizeof(Rule)); 
-                    new_rule->target = malloc(sizeof(char) * strlen(dependency)+1); 
+                    new_rule->target = calloc(strlen(dependency) + 1, sizeof(char));
+                    // new_rule->target = malloc(sizeof(char) * strlen(dependency)+1); 
+                    // memset(new_rule->target, 0, sizeof(char) * (strlen(target) + 1));
                     strncpy(new_rule->target, dependency, strlen(dependency));
                     new_rule->dependencies = NULL; 
                     new_rule->actions = NULL;
@@ -177,6 +180,7 @@ Rule *parse_file(FILE *fp) {
             Action* new_action = malloc(sizeof(Action)); 
             // new_action->args = malloc(sizeof(char*) * (count + 1));
             new_action->args = action_args;
+            new_action->next_act = NULL;
             // memcpy(new_action->args, action_args, sizeof(char*) * count);
             // for(int i = 0; i < count; i++){
             //     new_action->args[i] = malloc(sizeof(char) * (strlen(action_args[i]) + 1));
