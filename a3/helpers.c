@@ -85,4 +85,3 @@ char *args_to_string(char **args, char *buffer, int size) {
     }
     return buffer;
 }
-

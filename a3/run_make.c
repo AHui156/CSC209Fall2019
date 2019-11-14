@@ -27,6 +27,7 @@ int compare_mtime(const char *pathname1, const char *pathname2){
     free(ret2); 
     return ret_num;
 }
+
 // MACOS version
 // int compare_mtime(const char *pathname1, const char *pathname2){
 //     struct stat ret1, ret2; 
@@ -50,7 +51,7 @@ void run_make(char *target, Rule *rules, int pflag) {
     int dep_count = 0;
     int dep_fork;      
     while(dep_head != NULL){
-        // If -p, fork each dependency        
+        // If -p, fork each dependency
         if (pflag == 1){ 
             dep_fork = fork();
             if(dep_fork == -1){
@@ -80,19 +81,26 @@ void run_make(char *target, Rule *rules, int pflag) {
         }
     } 
 
-    // Check if any dependency is more recent than the current target
+    int file_exists = access(check_rule->target, F_OK);
     int update = 0;
-    dep_head = check_rule->dependencies; 
-    while(dep_head != NULL){
-        if (!compare_mtime(check_rule->target, dep_head->rule->target)){
-            printf("%s is more recent than %s\n", dep_head->rule->target, check_rule->target);            
-            update = 1; 
+
+    // Check if target file exists
+    if (file_exists == -1){
+        printf("%s does not exist.\n", check_rule->target);
+    } else {
+        // Check if any dependency is more recent than the current target
+        dep_head = check_rule->dependencies; 
+        while(dep_head != NULL){
+            if (!compare_mtime(check_rule->target, dep_head->rule->target)){
+                printf("%s is more recent than %s\n", dep_head->rule->target, check_rule->target);      
+                update = 1; 
+            }
+            dep_head = dep_head->next_dep;
         }
-        dep_head = dep_head->next_dep;
     }
 
     // If dependency is more recent, or target file doesn't exist -> execute actions
-    if (update || access(check_rule->target, F_OK) == -1){
+    if (update || file_exists == -1){
         Action* action_head = check_rule->actions;
         while (action_head != NULL){
             char **act_args = action_head->args;

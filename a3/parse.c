@@ -73,7 +73,6 @@ void print_rules(Rule *rules){
 
  */
 Rule *parse_file(FILE *fp) {
-   // char *inputline = malloc(sizeof(char) * MAXLINE);
     char *inputline = calloc(MAXLINE, sizeof(char));
    char *tofree = inputline;  
    Rule *rule_head = NULL; 
@@ -82,13 +81,16 @@ Rule *parse_file(FILE *fp) {
 
        // check if comment or \n or empty 
         if (inputline[0] == '#' || inputline[0] == '\n' || is_comment_or_empty(inputline) == 1) continue;
-        remove_trailing(inputline); // removing trailing comment and newline 
+
+        // removing trailing comment and newline
+        remove_trailing(inputline); 
 
         if(inputline[0] != '\t'){
             // Processing target line here
             // Extract target 
             char *target = strsep(&inputline, " ");
-            strsep(&inputline, " "); // removes the semicolon
+            // removes the semicolon
+            strsep(&inputline, " "); 
             
             // Traverse the Rule linked list to check if Rule already exists
             Rule *check_rule = rule_head; 
@@ -109,8 +111,6 @@ Rule *parse_file(FILE *fp) {
                 Rule *new_rule = NULL;
                 new_rule = malloc(sizeof(Rule)); 
                 new_rule->target = calloc(strlen(target) + 1, sizeof(char));
-                // new_rule->target = malloc(sizeof(char) * (strlen(target) + 1)); 
-                // memset(new_rule->target, 0, sizeof(char) * (strlen(target) + 1));
                 strncpy(new_rule->target, target, strlen(target));  
                 new_rule->dependencies = NULL; 
                 new_rule->actions = NULL;
