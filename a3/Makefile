@@ -17,8 +17,8 @@ parse.o : parse.c
 run_make.o : run_make.c
 	gcc -Wall -g -c run_make.c
 
-test_target: 
-	echo Executing test_target... 
+test_target : 
+	echo Printing out this target! 
 
 clean : 
 	rm pmake *.o
