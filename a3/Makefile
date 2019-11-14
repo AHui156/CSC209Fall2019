@@ -17,17 +17,8 @@ parse.o : parse.c
 run_make.o : run_make.c
 	gcc -Wall -g -c run_make.c
 
-test.o : test.c 
-	gcc -Wall -g -c test.c
-
-test : test.o helpers.o parse.o 
-	gcc -Wall -g -o test test.o helpers.o parse.o
-	rm test.o 
-	rm helpers.o 
-	rm parse.o
+test_target: 
+	echo Executing test_target... 
 
 clean : 
 	rm pmake *.o
-
-cleantest : 
-	rm test *.o
