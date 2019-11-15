@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
     sigemptyset(&new_sig.sa_mask); 
     sigaction(SIGPROF, &new_sig, NULL);  
 
-    struct itimerval new_time, old_time; 
+    struct itimerval new_time;
     new_time.it_interval.tv_sec = 0; 
     new_time.it_interval.tv_usec = 0; 
     new_time.it_value.tv_sec = seconds; 
