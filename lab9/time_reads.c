@@ -46,7 +46,6 @@ int main(int argc, char **argv) {
     new_sig.sa_handler = sig_handler; 
     new_sig.sa_flags = 0; 
     sigemptyset(&new_sig.sa_mask); 
-
     sigaction(SIGPROF, &new_sig, NULL);  
 
     struct itimerval new_time, old_time; 
@@ -54,7 +53,7 @@ int main(int argc, char **argv) {
     new_time.it_interval.tv_usec = 0; 
     new_time.it_value.tv_sec = seconds; 
     new_time.it_value.tv_usec = 0; 
-    if(setitimer(ITIMER_PROF, &new_time, &old_time) < 0){
+    if(setitimer(ITIMER_PROF, &new_time, NULL) < 0){
       perror("stitemer"); 
       exit(1); 
     }    
@@ -67,11 +66,8 @@ int main(int argc, char **argv) {
       fseek(fp, sizeof(int) * num, SEEK_SET);
       int output = 0; 
       fread(&output, sizeof(int), 1, fp);
-      printf("Count %ld: %d\n", num_reads, output); 
-      sleep(1); 
+      fprintf(stderr, "Count %ld: %d\n", num_reads, output); 
       num_reads++; 
-      getitimer(ITIMER_PROF, &old_time); 
-      printf("Current time: %ld\n", old_time.it_value.tv_sec);
     }
     return 1; // something is wrong if we ever get here!
 }
