@@ -17,8 +17,8 @@ long num_reads, seconds;
 
 // signal handler function 
 void sig_handler(int signal){
-  printf(MESSAGE, num_reads, seconds); 
-  exit(1);
+  fprintf(stdout, MESSAGE, num_reads, seconds); 
+  exit(0);
 }
 
 
@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
       fseek(fp, sizeof(int) * num, SEEK_SET);
       int output = 0; 
       fread(&output, sizeof(int), 1, fp);
-      fprintf(stderr, "Count %ld: %d\n", num_reads, output); 
+      fprintf(stdout, "Count %ld: %d\n", num_reads, output); 
       num_reads++; 
     }
     return 1; // something is wrong if we ever get here!
