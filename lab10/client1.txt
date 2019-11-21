@@ -1,0 +1,10 @@
+Script started on 2019-11-20 22:49:21-0500
+]0;foojoel@wolf:/h/u6/c9/01/foojoel/foojoel/lab10wolf:~/foojoel/lab10$ ./lego_gamec lego_game lego_game.cls[Kc lego_game lego_game.c[12P./lego_game[K./rabdc[K[K[K[K[Kra[K[Krandclient localhost
+connect: Connection refused
+]0;foojoel@wolf:/h/u6/c9/01/foojoel/foojoel/lab10wolf:~/foojoel/lab10$ ./randclient localhost
+connect: Connection refused
+]0;foojoel@wolf:/h/u6/c9/01/foojoel/foojoel/lab10wolf:~/foojoel/lab10$ ./randclient localhost
+]0;foojoel@wolf:/h/u6/c9/01/foojoel/foojoel/lab10wolf:~/foojoel/lab10$ exit
+exit
+
+Script done on 2019-11-20 22:52:43-0500
