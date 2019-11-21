@@ -1,0 +1,205 @@
+Script started on 2019-11-21 10:24:01-0500
+]0;foojoel@wolf:/h/u6/c9/01/foojoel/foojoel/lab10wolf:~/foojoel/lab10$ g[Kgb[K[Kgdb run[K[K[Kbf[K[Kbufserver
+GNU gdb (Ubuntu 8.1-0ubuntu3.2) 8.1.0.20180409-git
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from bufserver...done.
+(gdb) break main
+Breakpoint 1 at 0xce2: file bufserver.c, line 18.
+(gdb) break 39
+Breakpoint 2 at 0xd79: file bufserver.c, line 39.
+(gdb) run
+Starting program: /h/u6/c9/01/foojoel/foojoel/lab10/bufserver 
+
+Breakpoint 1, main () at bufserver.c:18
+18      int main() {
+(gdb) c
+Continuing.
+Waiting for a new connection...
+New connection accepted from 127.0.0.1:39382
+
+Breakpoint 2, main () at bufserver.c:39
+39              while ((nbytes = read(fd, after, room)) > 0) {
+(gdb) read[K[K[K[Kp nbytes
+$1 = 1
+(gdb) n
+42                  inbuf += nbytes;
+(gdb) p buf
+$2 = "A stit", '\000' <repeats 23 times>
+(gdb) p inbuf
+$3 = 0
+(gdb) p nbytes[K[K[K[K[K[K[K[Kp nbytes
+$4 = 6
+(gdb) n
+52                  while ((where = find_network_newline(buf, inbuf)) > 0) {
+(gdb) p inbuf
+$5 = 6
+(gdb) p buf
+$6 = "A stit", '\000' <repeats 23 times>
+(gdb) n
+77                  room = BUFSIZE - inbuf; 
+(gdb) 
+78                  after = &buf[inbuf]; 
+(gdb) p room
+$7 = 24
+(gdb) 
+$8 = 24
+(gdb) n
+39              while ((nbytes = read(fd, after, room)) > 0) {
+(gdb) n
+
+
+
+42                  inbuf += nbytes;
+(gdb) 
+52                  while ((where = find_network_newline(buf, inbuf)) > 0) {
+(gdb) 
+77                  room = BUFSIZE - inbuf; 
+(gdb) 
+78                  after = &buf[inbuf]; 
+(gdb) 3[K# reads[K blocks this prc[K[K[Kprocess until it coni[K[K[K[K[K[K[K[K[K[K[K[K[Kuntil something [K[K[K[K[K[K[K[K[K[Kmore things are read [K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K h[Kthere is data to be [K[K[K[K[K[Kin [K[K[K[K[K[K[K[Ksome data in the pipe[K[K[K[K[K[K[K[Kthe sco[K[K[Ksocketfd
+(gdb) 
+(gdb) n
+39              while ((nbytes = read(fd, after, room)) > 0) {
+(gdb) 
+
+42                  inbuf += nbytes;
+(gdb) 
+52                  while ((where = find_network_newline(buf, inbuf)) > 0) {
+(gdb) p buf
+$9 = "A stitch in tim", '\000' <repeats 14 times>
+(gdb) p inbuf
+$10 = 15
+(gdb) 
+$11 = 15
+(gdb) n
+77                  room = BUFSIZE - inbuf; 
+(gdb) 
+78                  after = &buf[inbuf]; 
+(gdb) 
+39              while ((nbytes = read(fd, after, room)) > 0) {
+(gdb) 
+42                  inbuf += nbytes;
+(gdb) p buf
+$12 = "A stitch in time\r\n", '\000' <repeats 11 times>
+(gdb) p nbytes
+$13 = 3
+(gdb) p buf[K[K[Kinbuf
+$14 = 15
+(gdb) n
+52                  while ((where = find_network_newline(buf, inbuf)) > 0) {
+(gdb) # a full length[K[K[K[K[K[K[K lie[Kne is d[Kfound
+(gdb) n
+65                      write(STDOUT_FILENO, buf, where); 
+(gdb) n
+A stitch in time
+73                      inbuf -= where; 
+(gdb) n
+74                      memmove(buf, &buf[where], inbuf); 
+(gdb) p inbuf
+$15 = 0
+(gdb) n
+52                  while ((where = find_network_newline(buf, inbuf)) > 0) {
+(gdb) p buf
+$16 = "A stitch in time\r\n", '\000' <repeats 11 times>
+(gdb) p buf[where[[K]
+$17 = 0 '\000'
+(gdb) n
+77                  room = BUFSIZE - inbuf; 
+(gdb) n
+78                  after = &buf[inbuf]; 
+(gdb) p after
+$18 = 0x7fffffffe9af "e\r\n"
+(gdb) p *after
+$19 = 101 'e'
+(gdb) n
+39              while ((nbytes = read(fd, after, room)) > 0) {
+(gdb) 
+42                  inbuf += nbytes;
+(gdb) p inbuf[K[K[K[K[Knbytes
+$20 = 6
+(gdb) p inbuf
+$21 = 0
+(gdb) n
+52                  while ((where = find_network_newline(buf, inbuf)) > 0) {
+(gdb) n
+77                  room = BUFSIZE - inbuf; 
+(gdb) n
+78                  after = &buf[inbuf]; 
+(gdb) 
+39              while ((nbytes = read(fd, after, room)) > 0) {
+(gdb) 
+42                  inbuf += nbytes;
+(gdb) p nbytes
+$22 = 3
+(gdb) n after
+main () at bufserver.c:42
+42                  inbuf += nbytes;
+(gdb) p after
+$23 = 0x7fffffffe9a6 "ch in time\r\n"
+(gdb) n
+52                  while ((where = find_network_newline(buf, inbuf)) > 0) {
+(gdb) p inbuf
+$24 = 9
+(gdb) p buf
+$25 = "A stitch in time\r\n", '\000' <repeats 11 times>
+(gdb) n
+77                  room = BUFSIZE - inbuf; 
+(gdb) 
+78                  after = &buf[inbuf]; 
+(gdb) 
+39              while ((nbytes = read(fd, after, room)) > 0) {
+(gdb) 
+42                  inbuf += nbytes;
+(gdb) 
+52                  while ((where = find_network_newline(buf, inbuf)) > 0) {
+(gdb) 
+77                  room = BUFSIZE - inbuf; 
+(gdb) 
+78                  after = &buf[inbuf]; 
+(gdb) 
+39              while ((nbytes = read(fd, after, room)) > 0) {
+(gdb) 
+42                  inbuf += nbytes;
+(gdb) n
+52                  while ((where = find_network_newline(buf, inbuf)) > 0) {
+(gdb) 
+65                      write(STDOUT_FILENO, buf, where); 
+(gdb) 
+A stitch in time
+73                      inbuf -= where; 
+(gdb) 
+74                      memmove(buf, &buf[where], inbuf); 
+(gdb) 
+52                  while ((where = find_network_newline(buf, inbuf)) > 0) {
+(gdb) c
+Continuing.
+A stitch in time
+A stitch in time
+A stitch in time
+Waiting for a new connection...
+^C
+Program received signal SIGINT, Interrupt.
+0x00007ffff7b067e4 in __libc_accept (fd=3, addr=..., len=0x7fffffffe928) at ../sysdeps/unix/sysv/linux/accept.c:26
+26      ../sysdeps/unix/sysv/linux/accept.c: No such file or directory.
+(gdb) q
+A debugging session is active.
+
+        Inferior 1 [process 5342] will be killed.
+
+Quit anyway? (y or n) y
+]0;foojoel@wolf:/h/u6/c9/01/foojoel/foojoel/lab10wolf:~/foojoel/lab10$ exit
+exit
+
+Script done on 2019-11-21 10:40:16-0500

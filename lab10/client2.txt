@@ -1,0 +1,240 @@
+Script started on 2019-11-21 10:23:55-0500
+]0;foojoel@wolf:/h/u6/c9/01/foojoel/foojoel/lab10wolf:~/foojoel/lab10$ g[Kgd b[K[K[K[Kgdb [K[K[K[Kgdb randclient
+GNU gdb (Ubuntu 8.1-0ubuntu3.2) 8.1.0.20180409-git
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from randclient...done.
+(gdb) run localhos[K[K[K[K[K[K[K[K[K[K[K[Kbreak main
+Breakpoint 1 at 0xc69: file randclient.c, line 24.
+(gdb) break main [K[K[K[K[K[K[K[K[K[K[Kbreak 57
+Breakpoint 2 at 0xd9b: file randclient.c, line 57.
+(gdb) run localhost
+Starting program: /h/u6/c9/01/foojoel/foojoel/lab10/randclient localhost
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffeaa8) at randclient.c:24
+24          if (argc != 2) {
+(gdb) n
+29          int soc = connect_to_server(PORT, argv[1]);
+(gdb) 
+31          write_random_pieces(soc, MESSAGE, TIMES);
+(gdb) 
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) p piece_size
+$1 = 6
+(gdb) n
+59              current_byte += piece_size;
+(gdb) n[Kn
+48          while (current_byte < total_bytes) {
+(gdb) n
+49              int piece_size = rand() % (MAXCHARS - MINCHARS + 1) + MINCHARS;
+(gdb) n
+50              int bytes_left = total_bytes - current_byte;
+(gdb) 
+51              if (piece_size > bytes_left) {
+(gdb) 
+55              for (int i = 0; i < piece_size; i++) {
+(gdb) 
+56                  piece[i] = message[(current_byte + i) % message_len];
+(gdb) 
+55              for (int i = 0; i < piece_size; i++) {
+(gdb) 
+56                  piece[i] = message[(current_byte + i) % message_len];
+(gdb) 
+55              for (int i = 0; i < piece_size; i++) {
+(gdb) 
+56                  piece[i] = message[(current_byte + i) % message_len];
+(gdb) 
+55              for (int i = 0; i < piece_size; i++) {
+(gdb) 
+56                  piece[i] = message[(current_byte + i) % message_len];
+(gdb) 
+55              for (int i = 0; i < piece_size; i++) {
+(gdb) 
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+59              current_byte += piece_size;
+(gdb) c
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) p piece 
+$2 = "e\r\nimt"
+(gdb) p piece s[K[K_size
+$3 = 3
+(gdb) n
+59              current_byte += piece_size;
+(gdb) n
+48          while (current_byte < total_bytes) {
+(gdb) 
+49              int piece_size = rand() % (MAXCHARS - MINCHARS + 1) + MINCHARS;
+(gdb) 
+50              int bytes_left = total_bytes - current_byte;
+(gdb) p piece_size
+$4 = 6
+(gdb) n
+51              if (piece_size > bytes_left) {
+(gdb) 
+55              for (int i = 0; i < piece_size; i++) {
+(gdb) 
+56                  piece[i] = message[(current_byte + i) % message_len];
+(gdb) 
+55              for (int i = 0; i < piece_size; i++) {
+(gdb) 
+56                  piece[i] = message[(current_byte + i) % message_len];
+(gdb) 
+55              for (int i = 0; i < piece_size; i++) {
+(gdb) 
+56                  piece[i] = message[(current_byte + i) % message_len];
+(gdb) 
+55              for (int i = 0; i < piece_size; i++) {
+(gdb) 
+56                  piece[i] = message[(current_byte + i) % message_len];
+(gdb) 
+55              for (int i = 0; i < piece_size; i++) {
+(gdb) 
+56                  piece[i] = message[(current_byte + i) % message_len];
+(gdb) 
+55              for (int i = 0; i < piece_size; i++) {
+(gdb) 
+56                  piece[i] = message[(current_byte + i) % message_len];
+(gdb) 
+55              for (int i = 0; i < piece_size; i++) {
+(gdb) 
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+59              current_byte += piece_size;
+(gdb) 
+48          while (current_byte < total_bytes) {
+(gdb) 3[K# c[K[K[K# piece of size 6 was written into the socket
+(gdb) c
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) p piece
+$5 = "ch tit"
+(gdb) p piece+si[K[K[K_size
+$6 = 3
+(gdb) n
+59              current_byte += piece_size;
+(gdb) c
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) c
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+Continuing.
+
+Breakpoint 2, write_random_pieces (soc=3, message=0x5555555551e0 "A stitch in time\r\n", times=5)
+    at randclient.c:58
+58              write(soc, piece, piece_size);
+(gdb) 
+Continuing.
+[Inferior 1 (process 5329) exited normally]
+(gdb) q
+]0;foojoel@wolf:/h/u6/c9/01/foojoel/foojoel/lab10wolf:~/foojoel/lab10$ exit
+exit
+
+Script done on 2019-11-21 10:40:05-0500
