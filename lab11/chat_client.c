@@ -47,7 +47,6 @@ int main(void) {
 
     // Read input from the user, send it to the server, and then accept the
     // echo that returns. Exit when stdin is closed.
-    char buf[BUF_SIZE + 1];
     while (1) {
         int num_read = read(STDIN_FILENO, buf, BUF_SIZE);
         if (num_read == 0) {
