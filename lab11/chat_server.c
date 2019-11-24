@@ -72,7 +72,7 @@ int read_from(int client_index, struct sockname *usernames) {
         return 0;
     } else {
         // Add username to the message: 
-        sprintf(buf_out, "%s: %s\r\n", usernames[client_index].username, buf);
+        sprintf(buf_out, "%s: %s", usernames[client_index].username, buf);
 
         // Write to all clients 
         for (int i = 0; i < MAX_CONNECTIONS; i++){
@@ -135,8 +135,9 @@ int main(void) {
 
     while (1) {
         // select updates the fd_set it receives, so we always use a copy and retain the original.
+        // listen_fds is a copy? 
         fd_set listen_fds = all_fds;
-        int nready = select(max_fd + 1, &listen_fds, NULL, NULL, NULL); // select() blocks until receiving input? 
+        int nready = select(max_fd + 1, &listen_fds, NULL, NULL, NULL); 
         if (nready == -1) {
             perror("server: select");
             exit(1);

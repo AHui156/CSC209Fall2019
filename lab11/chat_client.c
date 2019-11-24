@@ -48,23 +48,41 @@ int main(void) {
     // Read input from the user, send it to the server, and then accept the
     // echo that returns. Exit when stdin is closed.
     // char buf[BUF_SIZE + 1];
+
+    // Initialize fd_set 
+    fd_set all_fds; 
+    FD_ZERO(&all_fds);
+    FD_SET(sock_fd, &all_fds);
+    FD_SET(STDIN_FILENO, &all_fds); 
     while (1) {
-        int num_read = read(STDIN_FILENO, buf, BUF_SIZE);
-        if (num_read == 0) {
-            break;
-        }
-        buf[num_read] = '\0';         
-		// Should really send '\r\n'
-        int num_written = write(sock_fd, buf, num_read);
-        if (num_written != num_read) {
-            perror("client: write");
-            close(sock_fd);
+        fd_set copy_fds = all_fds; 
+        int nready = select(sock_fd + 1, &copy_fds, NULL, NULL, NULL);
+        if (nready == -1) {
+            perror("server: select");
             exit(1);
         }
 
-        num_read = read(sock_fd, buf, BUF_SIZE);
-        buf[num_read] = '\0';
-        printf("Received from server: %s", buf);
+        // Check if sock_fd is closed 
+
+        // Check if sock_fd or STDIN is ready
+        if (FD_ISSET(sock_fd, &copy_fds)){
+            num_read = read(sock_fd, buf, BUF_SIZE);
+            if (num_read == 0){ return 0; }
+            buf[num_read] = '\0';
+            printf("%s", buf); 
+        } else if (FD_ISSET(STDIN_FILENO, &copy_fds)){
+            int num_read = read(STDIN_FILENO, buf, BUF_SIZE);
+            if (num_read == 0) {
+                break;
+            }
+            buf[num_read] = '\0';
+            int num_written = write(sock_fd, buf, num_read);
+            if (num_written != num_read) {
+                perror("client: write");
+                close(sock_fd);
+                exit(1);
+            }
+        }
     }
 
     close(sock_fd);
