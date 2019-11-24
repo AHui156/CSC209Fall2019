@@ -57,14 +57,33 @@ int accept_connection(int fd, struct sockname *usernames) {
 int read_from(int client_index, struct sockname *usernames) {
     int fd = usernames[client_index].sock_fd;
     char buf[BUF_SIZE + 1];
+    char buf_out[(BUF_SIZE + 1) * 2];
 
     int num_read = read(fd, &buf, BUF_SIZE);
+    if (num_read == 0) { return fd; }
     buf[num_read] = '\0'; 
-    if (num_read == 0 || write(fd, buf, strlen(buf)) != strlen(buf)) {
-        usernames[client_index].sock_fd = -1;
-        return fd;
-    }
+    
+    
+    // Check if username for the passed in client is set
+    if (usernames[client_index].username == NULL){
+        usernames[client_index].username = malloc(sizeof(char) * strlen(buf));
+        buf[num_read - 1] = '\0'; 
+        strncpy(usernames[client_index].username, buf, strlen(buf)); // note that buf terminates with \r\n\0;
+        return 0;
+    } else {
+        // Add username to the message: 
+        sprintf(buf_out, "%s: %s\r\n", usernames[client_index].username, buf);
 
+        // Write to all clients 
+        for (int i = 0; i < MAX_CONNECTIONS; i++){
+            // check if sock_fd is valid
+            if (usernames[i].sock_fd != -1){
+                if (write(usernames[i].sock_fd, buf_out, strlen(buf_out)) == -1){
+                    perror("write");
+                }
+            }
+        }  
+    }
     return 0;
 }
 
@@ -117,7 +136,7 @@ int main(void) {
     while (1) {
         // select updates the fd_set it receives, so we always use a copy and retain the original.
         fd_set listen_fds = all_fds;
-        int nready = select(max_fd + 1, &listen_fds, NULL, NULL, NULL);
+        int nready = select(max_fd + 1, &listen_fds, NULL, NULL, NULL); // select() blocks until receiving input? 
         if (nready == -1) {
             perror("server: select");
             exit(1);
