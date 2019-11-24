@@ -62,8 +62,6 @@ int main(void) {
             exit(1);
         }
 
-        // Check if sock_fd is closed 
-
         // Check if sock_fd or STDIN is ready
         if (FD_ISSET(sock_fd, &copy_fds)){
             num_read = read(sock_fd, buf, BUF_SIZE);
