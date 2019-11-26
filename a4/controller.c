@@ -12,6 +12,8 @@ int is_valid_type(struct cignal *cig) {
 
 /* Returns 1 if the gateway seen this device before?
  */
+
+// Not sure how this check works.... 
 int is_registered(int id, int *device_record) {
     if (device_record[id - LOWEST_ID] == 1) {
         return 1;
@@ -71,7 +73,50 @@ void adjust_fan(struct cignal *cig) {
 int process_message(struct cignal *cig, int *device_record) {
     
     // TODO
-    
-    fprintf(stderr, "Received corrupted cignal! The message is discarded...\n");
+    // Check headers of cignal to ensure validity
+    //  - Check handshake
+    //  - check sensor update 
+    //      - if so, adjust_fan
+    //  
+    // Print state 
+    // Adjust fan 
+
+    // Check cignal type
+    if (!is_valid_type(cig)){ 
+        fprintf(stderr, "Cignal is not HANDSHAKE or SENSOR UPDATE.\n");
+        return -1; 
+    } 
+
+    // if HANDSHAKE
+    if (cig->hdr.type == HANDSHAKE){
+        // if valid HANDSHAKE, check registered
+        if (!is_registered(cig->hdr.device_id, device_record)){
+            //register device 
+            cig->hdr.device_id = register_device(device_record);
+        }        
+    }
+
+    // if SENSOR UPDATE
+    if (cig->hdr.type == UPDATE){
+        // check if registered, else return error 
+        if (!is_registered(cig->hdr.device_id, device_record)){
+            fprintf(stderr, "Device_id [%d] trying to UPDATE is not registered.\n", cig->hdr.device_id); 
+            return -1; 
+        } else {
+            // from temperature sensor 
+            if (cig->hdr.device_type == TEMPERATURE){
+                printf("Temperature: %.4f --> Device_ID: %d\n", cig->value, cig->hdr.device_id);
+            } else if (cig->hdr.device_type == HUMIDITY){
+                printf("Humidity: %.4f --> Device_ID: %d\n", cig->value, cig->hdr.device_id);
+            } else {
+                //invalid device_type
+                fprintf(stderr, "device_type is invalid");
+                return -1; 
+            }
+        }
+    }
+
+    // shouldn't get here
     return -1;
+
 }

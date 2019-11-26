@@ -60,8 +60,18 @@ int main(int argc, char *argv[]){
 	(void)device_record;
 	(void)cig_serialized;
 
+	// Set up the fd_set 
+	fd_set all_fds; 
+	FD_ZERO(&all_fds);
+	
+
 
 	while(1) {
+		//select with timeout of 5 sec. fd_set should contain all sensor fds
+		// On read -> print RAW MESSAGE, process_message, write message back, close connection
+
+
+		
 
 	}
 	return 0;
