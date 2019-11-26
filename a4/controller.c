@@ -88,12 +88,14 @@ int process_message(struct cignal *cig, int *device_record) {
     } 
 
     // if HANDSHAKE
-    if (cig->hdr.type == HANDSHAKE){
+    if (cig->hdr.type == HANDSHAKE && cig->hdr.device_id == -1){
         // if valid HANDSHAKE, check registered
         if (!is_registered(cig->hdr.device_id, device_record)){
             //register device 
             cig->hdr.device_id = register_device(device_record);
         }        
+    } else {
+        fprintf(stderr, "HANDHSAKE has wrong device_id\n");
     }
 
     // if SENSOR UPDATE
@@ -103,15 +105,19 @@ int process_message(struct cignal *cig, int *device_record) {
             fprintf(stderr, "Device_id [%d] trying to UPDATE is not registered.\n", cig->hdr.device_id); 
             return -1; 
         } else {
-            // from temperature sensor 
-            if (cig->hdr.device_type == TEMPERATURE){
-                printf("Temperature: %.4f --> Device_ID: %d\n", cig->value, cig->hdr.device_id);
-            } else if (cig->hdr.device_type == HUMIDITY){
-                printf("Humidity: %.4f --> Device_ID: %d\n", cig->value, cig->hdr.device_id);
-            } else {
-                //invalid device_type
-                fprintf(stderr, "device_type is invalid");
-                return -1; 
+            switch (cig->hdr.device_type){
+                case TEMPERATURE: 
+                    printf("Temperature: %.4f --> Device_ID: %d\n", cig->value, cig->hdr.device_id);    
+                    adjust_fan(cig);
+                    break;
+                case HUMIDITY: 
+                    printf("Humidity: %.4f --> Device_ID: %d\n", cig->value, cig->hdr.device_id);
+                    adjust_fan(cig);
+                    break; 
+                default: 
+                    fprintf(stderr, "device_type is invalid");
+                    return -1; 
+                    break;
             }
         }
     }

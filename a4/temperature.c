@@ -76,6 +76,32 @@ int main(int argc, char **argv) {
 
 		// TODOs
 
+		if (msgno == 1){
+			// perform HANDSHAKE 
+			cig.hdr.type = HANDSHAKE; 
+			cig.hdr.device_id = -1;
+			
+		} else {
+			// perform update
+			// send the updated cig, then receive instruction cig from gateway 
+			read_humidity(&cig);
+		}
+
+		if(write(peerfd, serialize_cignal(cig), CIGLEN) != CIGLEN){
+				fprintf(stderr, "Humidity sensor has error writing to gateway"); 
+				exit(1);
+		}
+			
+		if(read(peerfd, serialize_cignal, CIGLEN) != CIGLEN){
+			fprintf(stderr, "Humidity sensor has error reading from gateway"); 
+			exit(1);
+		}
+		// Update cig 
+		unpack_cignal(serialize_cignal, &cig);
+
+		msgno++;
+
+
 		if (sleep(INTERVAL) >= 0) {
 			rawtime = time(NULL);
 			now = localtime(&rawtime);
