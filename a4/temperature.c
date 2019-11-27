@@ -80,11 +80,6 @@ int main(int argc, char **argv) {
 			// perform HANDSHAKE 
 			cig.hdr.type = HANDSHAKE; 
 			cig.hdr.device_id = -1;
-			
-		} else {
-			// perform update
-			// send the updated cig, then receive instruction cig from gateway 
-			// read_temperature(&cig);
 		}
 
 		cig_serialized = serialize_cignal(cig);
@@ -98,10 +93,15 @@ int main(int argc, char **argv) {
 			fprintf(stderr, "Error reading from gateway"); 
 			exit(1);
 		}
+
+		// close connection 
+		close(peerfd); 
+
 		// Update cig 
 		unpack_cignal(cig_serialized, &cig);
 
 		msgno++;
+
 		if (sleep(INTERVAL) >= 0) {
 			rawtime = time(NULL);
 			now = localtime(&rawtime);

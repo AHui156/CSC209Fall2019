@@ -57,7 +57,7 @@ int main(int argc, char *argv[]){
 	FD_SET(gatewayfd, &all_fds); 
 
 	while(1) {
-		//select with timeout of 5 sec. fd_set should contain all sensor fds
+		// select with timeout of 5 sec. fd_set should contain all sensor fds
 		// Problem: do we do manage incoming connection in a serialized fashion? 
 		// No, all clients are responeded to per loop
 
@@ -79,6 +79,7 @@ int main(int argc, char *argv[]){
 
 		if (FD_ISSET(gatewayfd, &all_fds)){
 			// iterate through number of returns from select
+			printf("Number of pending connections: %d\n", select_ret); 
 			for (int i = 0; i < select_ret; i++){		
 				peerfd = accept_connection(gatewayfd); 
 				if (peerfd != -1){
@@ -91,10 +92,8 @@ int main(int argc, char *argv[]){
 						// unpack message to cignal 
 						unpack_cignal(cig_serialized, &cig); 
 
-						if (process_message(&cig, device_record) == -1) { 
-							printf("Error in process_message");
-							continue; 
-						}
+						if (process_message(&cig, device_record) == -1) { continue; }
+						
 						//send message back to client 
 						cig_serialized = serialize_cignal(cig); 
 
@@ -102,14 +101,11 @@ int main(int argc, char *argv[]){
 							perror("write"); 
 							continue; 
 						}
-
-						printf("********************END EVENT********************\n");
-
 						close(peerfd);
 					}
 				}  
-				
 			}
+			printf("********************END EVENT********************\n\n");
 		}		
 	}
 	return 0;

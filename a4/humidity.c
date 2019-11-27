@@ -74,9 +74,6 @@ int main(int argc, char **argv) {
 			// set HANDSHAKE 
 			cig.hdr.type = HANDSHAKE; 
 			cig.hdr.device_id = -1;
-		} else {
-			// set UPDATE
-			// read_humidity(&cig);
 		}
 
 		cig_serialized = serialize_cignal(cig);
@@ -90,6 +87,9 @@ int main(int argc, char **argv) {
 			fprintf(stderr, "Humidity sensor has error reading from gateway"); 
 			exit(1);
 		}
+
+		// close the connection
+		close(peerfd);
 
 		// Update cig 
 		unpack_cignal(cig_serialized, &cig);

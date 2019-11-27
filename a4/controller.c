@@ -81,21 +81,25 @@ int process_message(struct cignal *cig, int *device_record) {
     // if HANDSHAKE
     if (cig->hdr.type == HANDSHAKE){
         // check that device_id is not set yet 
-        if (cig->hdr.device_id != -1){
-            fprintf(stderr, "Device ID is invalid.\n");
-            return -1;  
-        } else {
-            // register device
-            cig->hdr.device_id = register_device(device_record);
-            return 0;
+        if (is_registered(cig->hdr.device_id, device_record) == 1){
+            fprintf(stderr, "HANDSHAKE error: device_id [%d] already registered.\n", cig->hdr.device_id);
+            return -1;
         }
+
+        if (cig->hdr.device_id != -1){
+            fprintf(stderr, "HANDSHAKE error: invalid device_id.\n");
+            return -1;  
+        }
+        // register device
+        cig->hdr.device_id = register_device(device_record);
+        return 0;
     }
 
     // if SENSOR UPDATE
     if (cig->hdr.type == UPDATE){
         // check if device_id registered
         if (is_registered(cig->hdr.device_id, device_record) == -1){
-            fprintf(stderr, "device_id [%d] trying to UPDATE is not registered.\n", cig->hdr.device_id); 
+            fprintf(stderr, "UPDATE error: device_id [%d] is not registered.\n", cig->hdr.device_id); 
             return -1; 
         } else {
             switch (cig->hdr.device_type){
@@ -108,7 +112,7 @@ int process_message(struct cignal *cig, int *device_record) {
                     adjust_fan(cig);
                     return 0; 
                 default: 
-                    fprintf(stderr, "device_type is invalid\n");
+                    fprintf(stderr, "UPDATE error: Invalid device_type.\n");
                     return -1; 
             }
         }
