@@ -56,11 +56,6 @@ int main(int argc, char **argv) {
 
 	char *cig_serialized = malloc(sizeof(char) * CIGLEN);
 	int msgno = 1;
-	// Suppress unused variable messages.  The next two lines can be removed
-	// before submitting.
-	(void)msgno;
-	(void)cig_serialized;
-
 
 	while (1) {
 		int peerfd;
@@ -75,32 +70,32 @@ int main(int argc, char **argv) {
 		 * from the server.
 		 */
 
-		// TODO
-
 		if (msgno == 1){
-			// perform HANDSHAKE 
+			// set HANDSHAKE 
 			cig.hdr.type = HANDSHAKE; 
 			cig.hdr.device_id = -1;
-			
 		} else {
-			// perform update
-			// send the updated cig, then receive instruction cig from gateway 
-			read_humidity(&cig);
+			// set UPDATE
+			// read_humidity(&cig);
 		}
 
-		if(write(peerfd, serialize_cignal(cig), CIGLEN) != CIGLEN){
+		cig_serialized = serialize_cignal(cig);
+
+		if(write(peerfd, cig_serialized, CIGLEN) != CIGLEN){
 				fprintf(stderr, "Humidity sensor has error writing to gateway"); 
 				exit(1);
 			}
-			
-		if(read(peerfd, serialize_cignal, CIGLEN) != CIGLEN){
+
+		if(read(peerfd, cig_serialized, CIGLEN) != CIGLEN){  
 			fprintf(stderr, "Humidity sensor has error reading from gateway"); 
 			exit(1);
 		}
+
 		// Update cig 
-		unpack_cignal(serialize_cignal, &cig);
+		unpack_cignal(cig_serialized, &cig);
 
 		msgno++;
+
 		if (sleep(INTERVAL) >= 0) {
 			rawtime = time(NULL);
 			now = localtime(&rawtime);

@@ -58,8 +58,8 @@ int main(int argc, char **argv) {
 	int msgno = 1;
 	// Suppress unuse variable messages.  The next two lines can be removed
 	// before submitting.
-	(void)msgno;
-	(void)cig_serialized;
+	// (void)msgno;
+	// (void)cig_serialized;
 
 	while (1) {
 		int peerfd;	
@@ -84,24 +84,24 @@ int main(int argc, char **argv) {
 		} else {
 			// perform update
 			// send the updated cig, then receive instruction cig from gateway 
-			read_humidity(&cig);
+			// read_temperature(&cig);
 		}
 
-		if(write(peerfd, serialize_cignal(cig), CIGLEN) != CIGLEN){
-				fprintf(stderr, "Humidity sensor has error writing to gateway"); 
-				exit(1);
+		cig_serialized = serialize_cignal(cig);
+
+		if(write(peerfd, cig_serialized, CIGLEN) != CIGLEN){
+			fprintf(stderr, "Error writing to gateway"); 
+			exit(1);
 		}
 			
-		if(read(peerfd, serialize_cignal, CIGLEN) != CIGLEN){
-			fprintf(stderr, "Humidity sensor has error reading from gateway"); 
+		if(read(peerfd, cig_serialized, CIGLEN) != CIGLEN){
+			fprintf(stderr, "Error reading from gateway"); 
 			exit(1);
 		}
 		// Update cig 
-		unpack_cignal(serialize_cignal, &cig);
+		unpack_cignal(cig_serialized, &cig);
 
 		msgno++;
-
-
 		if (sleep(INTERVAL) >= 0) {
 			rawtime = time(NULL);
 			now = localtime(&rawtime);
