@@ -72,39 +72,36 @@ int main(int argc, char *argv[]){
 			perror("select");  
 			exit(EXIT_FAILURE);
 		} else if (select_ret == 0){
-			// No fds are ready ... 0 means timeout? 
 			printf("Waiting for Sensors update...\n");
 			continue;
 		} 
 
 		if (FD_ISSET(gatewayfd, &all_fds)){
-			// iterate through number of returns from select
-			printf("Number of pending connections: %d\n", select_ret); 
-			for (int i = 0; i < select_ret; i++){		
-				peerfd = accept_connection(gatewayfd); 
-				if (peerfd != -1){
-					// connection succesful, read from fd
-					if (read(peerfd, cig_serialized, CIGLEN) != CIGLEN){
-						perror("read");
-						continue;
-					} else {
-						printf("RAW MESSAGE: %s\n", cig_serialized);
-						// unpack message to cignal 
-						unpack_cignal(cig_serialized, &cig); 
+			peerfd = accept_connection(gatewayfd); 
+			if (peerfd != -1){
+				// connection succesful, read from fd
+				if (read(peerfd, cig_serialized, CIGLEN) != CIGLEN){
+					perror("read");
+					continue;
+				} else {
+					printf("RAW MESSAGE: %s\n", cig_serialized);
 
-						if (process_message(&cig, device_record) == -1) { continue; }
-						
-						//send message back to client 
-						cig_serialized = serialize_cignal(cig); 
+					// unpack message to cignal 
+					unpack_cignal(cig_serialized, &cig); 
+					
+					// process message and alter cignal
+					if (process_message(&cig, device_record) == -1) { continue; }
+					
+					//send message back to client 
+					cig_serialized = serialize_cignal(cig); 
 
-						if (write(peerfd, serialize_cignal(cig), CIGLEN) != CIGLEN){
-							perror("write"); 
-							continue; 
-						}
-						close(peerfd);
+					if (write(peerfd, serialize_cignal(cig), CIGLEN) != CIGLEN){
+						perror("write"); 
+						continue; 
 					}
-				}  
-			}
+					close(peerfd);
+				}
+			}  
 			printf("********************END EVENT********************\n\n");
 		}		
 	}
