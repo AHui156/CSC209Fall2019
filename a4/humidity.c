@@ -56,13 +56,22 @@ int main(int argc, char **argv) {
 
 	char *cig_serialized = malloc(sizeof(char) * CIGLEN);
 	int msgno = 1;
-
+	 	
 	while (1) {
+		fd_set all_fds;
+		FD_ZERO(&all_fds);
+
+		struct timeval time_out; 
+		time_out.tv_sec = INTERVAL;
+		time_out.tv_usec = 0; 
+
 		int peerfd;
 		if ((peerfd = connect_to_server(port, hostname)) == -1)	{
 			printf("There was an error in connecting to the gateway!\n");
 			exit(1);
-		} 
+		} else {
+			FD_SET(peerfd, &all_fds);
+		}
 		/* TODO: Complete the while loop
 		 * If this is the first message, then send a handshake message with
 		 * a device id of -1.  If it is a subsequent message, then write
@@ -83,9 +92,24 @@ int main(int argc, char **argv) {
 				exit(1);
 			}
 
-		if(read(peerfd, cig_serialized, CIGLEN) != CIGLEN){  
-			fprintf(stderr, "Humidity sensor has error reading from gateway"); 
-			exit(1);
+		
+		// Add a timeout here in case server is unresponsive
+		// Assume we expect a response within INTERVAL seconds
+		int select_ret = select(peerfd + 1, &all_fds, NULL, NULL, &time_out);
+		if(select_ret == -1){
+			perror("select");  
+			exit(EXIT_FAILURE);
+		} else if (select_ret == 0){
+			// server did not respond in time 
+			close(peerfd); 
+			continue;
+		}
+
+		if (FD_ISSET(peerfd, &all_fds)){
+			if(read(peerfd, cig_serialized, CIGLEN) != CIGLEN){  
+				fprintf(stderr, "Humidity sensor has error reading from gateway"); 
+				exit(1);
+			}
 		}
 
 		// close the connection

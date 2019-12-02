@@ -55,12 +55,9 @@ int main(int argc, char *argv[]){
 	fd_set all_fds; 
 	FD_ZERO(&all_fds);
 	FD_SET(gatewayfd, &all_fds); 
+	int fd_store[MAXDEV] = {0};	
 
-	while(1) {
-		// select with timeout of 5 sec. fd_set should contain all sensor fds
-		// Problem: do we do manage incoming connection in a serialized fashion? 
-		// No, all clients are responeded to per loop
-
+	while(1) {		
 		struct timeval time_out; 
 		time_out.tv_sec = 5;
 		time_out.tv_usec = 0; 
@@ -76,13 +73,39 @@ int main(int argc, char *argv[]){
 			continue;
 		} 
 
-		if (FD_ISSET(gatewayfd, &all_fds)){
-			peerfd = accept_connection(gatewayfd); 
-			if (peerfd != -1){
-				// connection succesful, read from fd
-				if (read(peerfd, cig_serialized, CIGLEN) != CIGLEN){
+		// new connection requested
+		if (FD_ISSET(gatewayfd, &copy_fds)){
+			peerfd = accept_connection(gatewayfd);
+			if(peerfd != -1){
+				// add peerfd to the fd_set
+				FD_SET(peerfd, &all_fds); 
+
+				// store peerfd for later checking
+				for (int i = 0; i < MAXDEV; i++){
+					// Find the first 'empty' fd_store slot and store peerfd
+					if (fd_store[i] == 0){
+						fd_store[i] = peerfd;
+						break; 
+					}
+				}
+
+				// update max_fd 
+				max_fd = MAXFD(peerfd, max_fd);
+				continue;
+			}
+		}
+
+		// traverse fd_store and process all messages 
+		for(int i = 0; i < MAXDEV; i++){
+			// printf("Checking fd_store[%d] now\n", i);
+			if(fd_store[i] == 0){ continue; }
+
+			// Check if peerfd has sent something
+			if(FD_ISSET(fd_store[i], &copy_fds)){
+
+				// read from client, process_message, write to client
+				if (read(fd_store[i], cig_serialized, CIGLEN) != CIGLEN){
 					perror("read");
-					continue;
 				} else {
 					printf("RAW MESSAGE: %s\n", cig_serialized);
 
@@ -95,15 +118,18 @@ int main(int argc, char *argv[]){
 					//send message back to client 
 					cig_serialized = serialize_cignal(cig); 
 
-					if (write(peerfd, serialize_cignal(cig), CIGLEN) != CIGLEN){
+					if (write(fd_store[i], serialize_cignal(cig), CIGLEN) != CIGLEN){
 						perror("write"); 
-						continue; 
-					}
-					close(peerfd);
+					}					
 				}
-			}  
-			printf("********************END EVENT********************\n\n");
-		}		
+				close(fd_store[i]);
+			}
+
+			// processing of client is complete 
+			// remove from the fd_set and fd_store 
+			FD_CLR(fd_store[i], &all_fds); 
+			fd_store[i] = 0;
+		}
 	}
 	return 0;
 }

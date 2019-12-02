@@ -92,7 +92,6 @@ int process_message(struct cignal *cig, int *device_record) {
         }
         // register device
         cig->hdr.device_id = register_device(device_record);
-        return 0;
     }
 
     // if SENSOR UPDATE
@@ -106,11 +105,11 @@ int process_message(struct cignal *cig, int *device_record) {
                 case TEMPERATURE: 
                     printf("Temperature: %.4f --> Device_ID: %d\n", cig->value, cig->hdr.device_id);    
                     adjust_fan(cig);
-                    return 0;
+                    break;
                 case HUMIDITY: 
                     printf("Humidity: %.4f --> Device_ID: %d\n", cig->value, cig->hdr.device_id);
                     adjust_fan(cig);
-                    return 0; 
+                    break;
                 default: 
                     fprintf(stderr, "UPDATE error: Invalid device_type.\n");
                     return -1; 
@@ -118,7 +117,7 @@ int process_message(struct cignal *cig, int *device_record) {
         }
     }
 
-    // shouldn't get here
-    return -1;
+    printf("********************END EVENT********************\n\n");
+    return 0;
 
 }
