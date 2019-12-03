@@ -42,7 +42,8 @@ int main(int argc, char **argv) {
 	}
 
 	if (argc == 3) {
-		hostname = "localhost";
+		// hostname = "localhost";
+		hostname = argv[2]; 
 	}
 
 	port = strtol(argv[1], NULL, 0);
