@@ -118,7 +118,10 @@ int main(int argc, char **argv) {
 		// Update cig 
 		unpack_cignal(cig_serialized, &cig);
 
-		msgno++;
+		// Check if HANDSHAKE successful 
+		if (cig.hdr.device_id != -1){
+			msgno++;
+		}
 
 		if (sleep(INTERVAL) >= 0) {
 			rawtime = time(NULL);

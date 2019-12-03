@@ -12,8 +12,6 @@ int is_valid_type(struct cignal *cig) {
 
 /* Returns 1 if the gateway seen this device before?
  */
-
-// Not sure how this check works.... 
 int is_registered(int id, int *device_record) {
 if (device_record[id - LOWEST_ID] == 1) {
         return 1;
@@ -80,12 +78,17 @@ int process_message(struct cignal *cig, int *device_record) {
 
     // if HANDSHAKE
     if (cig->hdr.type == HANDSHAKE){
-        // check that device_id is not set yet 
+        // check if MAXDEV devices registered already
+        if (device_record[MAXDEV - 1] != 0){
+            fprintf(stderr, "HANDSHAKE error: maximum devices have been registered.\n");
+            return -1; 
+        }
+        // check that device_id is not registered yet 
         if (is_registered(cig->hdr.device_id, device_record) == 1){
             fprintf(stderr, "HANDSHAKE error: device_id [%d] already registered.\n", cig->hdr.device_id);
             return -1;
         }
-
+        // check that device_id == -1
         if (cig->hdr.device_id != -1){
             fprintf(stderr, "HANDSHAKE error: invalid device_id.\n");
             return -1;  

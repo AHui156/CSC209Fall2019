@@ -56,10 +56,6 @@ int main(int argc, char **argv) {
 
 	char *cig_serialized = malloc(sizeof(char) * CIGLEN);
 	int msgno = 1;
-	// Suppress unuse variable messages.  The next two lines can be removed
-	// before submitting.
-	// (void)msgno;
-	// (void)cig_serialized;
 
 	while (1) {
 		fd_set all_fds;
@@ -83,10 +79,8 @@ int main(int argc, char **argv) {
 		 * from the server.
 		 */
 
-		// TODOs
-
 		if (msgno == 1){
-			// perform HANDSHAKE 
+			// set HANDSHAKE 
 			cig.hdr.type = HANDSHAKE; 
 			cig.hdr.device_id = -1;
 		}
@@ -123,7 +117,10 @@ int main(int argc, char **argv) {
 		// Update cig 
 		unpack_cignal(cig_serialized, &cig);
 
-		msgno++;
+		// Check if HANDSHAKE successful 
+		if (cig.hdr.device_id != -1){			
+			msgno++;
+		}
 
 		if (sleep(INTERVAL) >= 0) {
 			rawtime = time(NULL);

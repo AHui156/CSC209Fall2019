@@ -74,23 +74,32 @@ int main(int argc, char *argv[]){
 		} 
 
 		// new connection requested
+		// NOTE: there will never be more than MAXDEV stored/open fds 
 		if (FD_ISSET(gatewayfd, &copy_fds)){
 			peerfd = accept_connection(gatewayfd);
-			if(peerfd != -1){
-				// add peerfd to the fd_set
-				FD_SET(peerfd, &all_fds); 
-
+			if(peerfd != -1){				
+				int flag = 0;
 				// store peerfd for later checking
 				for (int i = 0; i < MAXDEV; i++){
 					// Find the first 'empty' fd_store slot and store peerfd
 					if (fd_store[i] == 0){
 						fd_store[i] = peerfd;
+						flag = 1;
 						break; 
 					}
 				}
+				
+				// too many open fds, not enough space for peerfd
+				if(flag == 0){ 
+					close(peerfd); 
+					fprintf(stderr, "Too many simultaneous connections."); 
+				} else {
+					// add peerfd to the fd_set
+					FD_SET(peerfd, &all_fds); 
 
-				// update max_fd 
-				max_fd = MAXFD(peerfd, max_fd);
+					// update max_fd 
+					max_fd = MAXFD(peerfd, max_fd);						
+				}
 				continue;
 			}
 		}
