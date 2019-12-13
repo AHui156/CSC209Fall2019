@@ -14,4 +14,4 @@ Lab 11:\
 Assignment 1: 100\
 Assignment 2: 92.5\
 Assignment 3: 96.7\
-Assignment 4:\
+Assignment 4:
