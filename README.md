@@ -1,6 +1,6 @@
 # Marks for CSC209 Assignments 
 Lab 1: 86\
-Lab 2: 100\ 
+Lab 2: 100\
 Lab 3: 40\
 Lab 4: 100\
 Lab 5: 100\
