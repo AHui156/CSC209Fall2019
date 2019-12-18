@@ -9,7 +9,7 @@ Lab 7: 100\
 Lab 8: 100\
 Lab 9: 100\
 Lab 10: 100\
-Lab 11:\
+Lab 11:100\
 \
 Assignment 1: 100\
 Assignment 2: 92.5\
